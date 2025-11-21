@@ -10,26 +10,25 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace SkillMatchApplication
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for RegisterForm.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class RegisterForm : Window
     {
-        public MainWindow()
+        public RegisterForm()
         {
             InitializeComponent();
-            this.DataContext = this;
         }
 
-        private void Register_Click(object sender, MouseButtonEventArgs e)
+        private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
-            var registerWindow = new RegisterForm();
-            registerWindow.Show();
+
+
+            MessageBox.Show("Registration successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

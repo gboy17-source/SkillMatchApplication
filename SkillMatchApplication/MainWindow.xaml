@@ -22,7 +22,7 @@
                      Padding="10,0,0,0" 
                      VerticalContentAlignment="Center" 
                      Background="Transparent" 
-                     BorderThickness="0">
+                     BorderThickness="0" FontFamily="Yu Gothic UI">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
                         <Setter Property="Template">
@@ -68,10 +68,30 @@
                  Foreground="#FF183765"/>
         </Grid>
 
+        <TextBlock Text="REGISTER"
+           FontSize="22"
+           FontFamily="Yu Gothic UI Semibold"
+           FontWeight="Bold"
+           Foreground="#FF183765"
+           HorizontalAlignment="Left"
+           Margin="1232,727,0,0"
+           VerticalAlignment="Top"
+           Cursor="Hand"
+           MouseLeftButtonUp="Register_Click">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="TextDecorations" Value="Underline"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="#FF0A2657"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
 
         <Label x:Name="Forgot" Content="Forgot Password?" HorizontalAlignment="Left" Margin="1325,520,0,0" VerticalAlignment="Top" Foreground="#FF183765" FontSize="18" Height="41" Width="168" FontFamily="Yu Gothic UI"/>
         <Button x:Name="Login" Content="LOGIN" HorizontalAlignment="Left" Margin="1143,587,0,0" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" Foreground="#FF183765" Height="49" Width="275" Background="#FFEFECE3" BorderBrush="#FF183765" FontSize="20"/>
         <Label Content="Not a member yet?" HorizontalAlignment="Left" Margin="1197,690,0,0" VerticalAlignment="Top" FontSize="20" FontFamily="Yu Gothic UI" Foreground="#FF183765"/>
-        <Label x:Name="Register" Content="REGISTER" HorizontalAlignment="Left" Margin="1232,727,0,0" VerticalAlignment="Top" Foreground="#FF183765" FontSize="22" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold"/>
     </Grid>
 </Window>
