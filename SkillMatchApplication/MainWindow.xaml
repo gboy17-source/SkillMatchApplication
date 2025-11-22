@@ -90,7 +90,6 @@
             </TextBlock.Style>
         </TextBlock>
 
-        <Label x:Name="Forgot" Content="Forgot Password?" HorizontalAlignment="Left" Margin="1325,520,0,0" VerticalAlignment="Top" Foreground="#FF183765" FontSize="18" Height="41" Width="168" FontFamily="Yu Gothic UI"/>
         <Button x:Name="Login" Content="LOGIN" HorizontalAlignment="Left" Margin="1143,587,0,0" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" Foreground="#FF183765" Height="49" Width="275" Background="#FFEFECE3" BorderBrush="#FF183765" FontSize="20"/>
         <Label Content="Not a member yet?" HorizontalAlignment="Left" Margin="1197,690,0,0" VerticalAlignment="Top" FontSize="20" FontFamily="Yu Gothic UI" Foreground="#FF183765"/>
     </Grid>
