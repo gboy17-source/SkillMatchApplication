@@ -15,20 +15,13 @@ using System.Windows.Shapes;
 namespace SkillMatchApplication
 {
     /// <summary>
-    /// Interaction logic for RegisterForm.xaml
+    /// Interaction logic for Dashboard.xaml
     /// </summary>
-    public partial class RegisterForm : Window
+    public partial class Dashboard : Window
     {
-        public RegisterForm()
+        public Dashboard()
         {
             InitializeComponent();
-        }
-
-        private void btnRegister_Click(object sender, RoutedEventArgs e)
-        {
-
-
-            MessageBox.Show("Registration successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

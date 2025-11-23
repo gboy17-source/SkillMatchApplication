@@ -8,39 +8,38 @@
         ResizeMode="CanMinimize"
         WindowStyle="SingleBorderWindow"
         Title="SkillMatch" Height="1000" Width="1600">
-    
+    <!-- SkillMatch Left side -->
     <Grid x:Name="SkillMatch" Width="1600" Height="1000" Background="#FFEFECE3">
         <Rectangle HorizontalAlignment="Left" Height="100" Margin="-696,126,0,0" Stroke="Black" VerticalAlignment="Top" Width="100"/>
-        <Image HorizontalAlignment="Left" Height="990" VerticalAlignment="Top" Width="974" Source="/sm2.png"/>
-        <Label Content="WELCOME!" HorizontalAlignment="Left" Margin="1184,225,0,0" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="36" Foreground="#FF183765"/>
-        <Label Content="Sign in to your account." HorizontalAlignment="Left" Margin="1178,345,0,0" VerticalAlignment="Top" Foreground="#FF183765" FontFamily="Yu Gothic UI" FontSize="20"/>
-
-        <!-- Email TextBox -->
-        <Grid HorizontalAlignment="Left" Margin="1086,401,0,0" Height="49" VerticalAlignment="Top" Width="390">
-            <TextBox x:Name="txtEmail" 
-                     FontSize="22" 
-                     Padding="10,0,0,0" 
-                     VerticalContentAlignment="Center" 
-                     Background="Transparent" 
-                     BorderThickness="0" FontFamily="Yu Gothic UI">
+        <Image HorizontalAlignment="Left" Height="990" VerticalAlignment="Top" Width="974" Source="Resources/Logos/sm2.png" Margin="-15,0,0,0"/>
+        <!-- Login Form -->
+        <Grid x:Name="LoginContent" HorizontalAlignment="Left" Height="531" Margin="1086,225,0,0" VerticalAlignment="Top" Width="394">
+            <Label Content="WELCOME!" HorizontalAlignment="Left" Margin="97,57,0,0" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="36" Foreground="#FF183765"/>
+            <Label Content="Sign in to your account." HorizontalAlignment="Left" Margin="92,120,0,0" VerticalAlignment="Top" Foreground="#FF183765" FontFamily="Yu Gothic UI" FontSize="20"/>
+            <TextBox x:Name="txtLoginEmail" 
+                FontSize="22" 
+                Padding="10,0,0,0" 
+                VerticalContentAlignment="Center" 
+                Background="Transparent" 
+                BorderThickness="0" FontFamily="Yu Gothic UI" Margin="0,176,4,306">
                 <TextBox.Style>
-                    <Style TargetType="TextBox">
+                    <Style TargetType="{x:Type TextBox}">
                         <Setter Property="Template">
                             <Setter.Value>
-                                <ControlTemplate TargetType="TextBox">
+                                <ControlTemplate TargetType="{x:Type TextBox}">
                                     <Grid>
                                         <Border Background="White" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="4"/>
                                         <ScrollViewer x:Name="PART_ContentHost" Margin="5"/>
                                         <TextBlock Text="Type your email here." 
-                                                   Foreground="Gray" 
-                                                   Margin="10,0,0,0" 
-                                                   VerticalAlignment="Center"
-                                                   IsHitTestVisible="False">
+                                            Foreground="Gray" 
+                                            Margin="10,0,0,0" 
+                                            VerticalAlignment="Center"
+                                            IsHitTestVisible="False">
                                             <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
+                                                <Style TargetType="{x:Type TextBlock}">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource AncestorType=TextBox}}" Value="">
+                                                        <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource AncestorType={x:Type TextBox}}}" Value="">
                                                             <Setter Property="Visibility" Value="Visible"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -54,43 +53,139 @@
                     </Style>
                 </TextBox.Style>
             </TextBox>
+            <PasswordBox x:Name="txtLoginPassword"
+                FontSize="22"
+                Padding="10,0,0,0"
+                VerticalContentAlignment="Center"
+                Background="White"
+                BorderBrush="#CCCCCC"
+                BorderThickness="1"
+                Foreground="#FF183765" Margin="0,246,4,236"/>
+
+            <TextBlock x:Name="tbRegister" Text="REGISTER"
+                FontSize="22"
+                FontFamily="Yu Gothic UI Semibold"
+                FontWeight="Bold"
+                Foreground="#FF183765"
+                HorizontalAlignment="Left"
+                Margin="142,443,0,0"
+                VerticalAlignment="Top"
+                Cursor="Hand"
+                MouseLeftButtonUp="tbRegister_Click">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="TextDecorations" Value="Underline"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#FF0A2657"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+
+            <TextBlock x:Name="tbForgotPassword" Text="Forgot Password?"
+                FontSize="16"
+                FontFamily="Yu Gothic UI Semibold"
+                FontWeight="Bold"
+                Foreground="#FF183765"
+                HorizontalAlignment="Left"
+                Margin="264,295,0,0"
+                VerticalAlignment="Top"
+                Cursor="Hand"
+                MouseLeftButtonUp="tbForgotPassword_Click" Width="130">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#FF0A2657"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+
+            <Button x:Name="btnLogin" Content="LOGIN" HorizontalAlignment="Left" Margin="57,352,0,0" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" Foreground="#FFEFECE3" Height="49" Width="275" Background="#FF8FABD4" BorderBrush="#FF183765" FontSize="20" Click="btnLogin_Click"/>
+            <Label Content="Not a member yet?" HorizontalAlignment="Center" Margin="0,406,0,0" VerticalAlignment="Top" FontSize="20" FontFamily="Yu Gothic UI" Foreground="#FF183765"/>
         </Grid>
-        
-        <!-- Password TextBox -->
-        <Grid HorizontalAlignment="Left" Margin="1086,471,0,0" Height="49" VerticalAlignment="Top" Width="390">
-            <PasswordBox x:Name="txtPassword"
-                 FontSize="22"
-                 Padding="10,0,0,0"
-                 VerticalContentAlignment="Center"
-                 Background="White"
-                 BorderBrush="#CCCCCC"
-                 BorderThickness="1"
-                 Foreground="#FF183765"/>
+        <!-- Register Form -->
+        <Grid x:Name="RegisterContent" HorizontalAlignment="Left" Height="384" VerticalAlignment="Top" Width="461" Margin="1040,298,0,0" Visibility="Collapsed">
+            <Label
+                VerticalAlignment="Top" Margin="41,0,0,0" HorizontalAlignment="Left" FontSize="36" FontWeight="Bold" FontFamily="Yu Gothic UI Semibold" Foreground="#FF183765" Content="Create your account." Background="Transparent"/>
+            <TextBox
+                Width="304" VerticalAlignment="Top" TextWrapping="Wrap" x:Name="txtRegisterEmail" Margin="85,113,0,0" Height="46" HorizontalAlignment="Left" FontSize="20" Foreground="#FF183765"/>
+            <PasswordBox
+                Width="304" VerticalAlignment="Top" x:Name="txtRegisterPassword" Margin="85,186,0,0" Height="46" HorizontalAlignment="Left" FontSize="20"/>
+            <Label
+                VerticalAlignment="Top" Margin="29,120,0,0" HorizontalAlignment="Left" FontSize="16" FontFamily="Yu Gothic UI" Foreground="#FF183765" Content="Email:"/>
+            <Label
+                VerticalAlignment="Top" Margin="0,193,0,0" HorizontalAlignment="Left" FontSize="16" FontFamily="Yu Gothic UI" Foreground="#FF183765" Content="Password:"/>
+            <Button
+                Width="304" VerticalAlignment="Top" x:Name="btnRegister" Margin="85,252,0,0" Height="37" HorizontalAlignment="Left" FontSize="14" FontFamily="Yu Gothic UI Semibold" Foreground="#FFEFECE3" Content="REGISTER" Background="#FF8FABD4" Click="btnRegister_Click"/>
+            <Label
+                VerticalAlignment="Top" Margin="55,346,0,0" HorizontalAlignment="Left" FontSize="20" FontFamily="Yu Gothic UI" Foreground="#FF183765" Content="Already have an account?"/>
+            <TextBlock 
+                x:Name="tbLogin" Text="LOGIN" 
+                FontSize="22"
+                FontFamily="Yu Gothic UI Semibold"
+                FontWeight="Bold"
+                Foreground="#FF183765"
+                Margin="296,349,0,0"
+                VerticalAlignment="Top"
+                Cursor="Hand"
+                HorizontalAlignment="Left" TextWrapping="Wrap" Width="70" RenderTransformOrigin="-0.014,0.275"   MouseLeftButtonUp="tbLogin_Click">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="TextDecorations" Value="Underline"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#FF0A2657"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Grid>
+        <!-- Forgot Password Form -->
+        <Grid x:Name="ForgotEmailGrid" HorizontalAlignment="Left" Height="298" Margin="1067,324,0,0" VerticalAlignment="Top" Visibility="Collapsed">
+            <TextBox
+                Margin="0,99,0,0" Width="420" VerticalAlignment="Top" TextWrapping="Wrap" x:Name="txtEmailRecovery" Height="46" HorizontalAlignment="Left" FontSize="20" Foreground="#FF183765"/>
+            <Label
+                Margin="77,63,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="16" FontWeight="Bold" FontFamily="Yu Gothic Medium" Foreground="#FF183765" Content="Please enter your Recovery Email. "/>
+            <Button
+                Margin="0,162,0,0" VerticalAlignment="Top" Width="420" x:Name="btnSubmitEmail" Height="45" HorizontalAlignment="Left" FontSize="20" FontWeight="Bold" FontFamily="Yu Gothic UI Semibold" Foreground="#FFEFECE3" Content="SUBMIT" Background="#FF8FABD4" Click="btnSubmitEmail_Click"/>
+            <Label
+                Margin="19,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="36" FontWeight="Bold" FontFamily="Yu Gothic UI Semibold" Foreground="#FF183765" Content="Forgot your Password?"/>
+            <Button
+                Margin="100,244,0,0" VerticalAlignment="Top" Width="220" x:Name="btnBackToLogin" Height="54" HorizontalAlignment="Left" FontSize="20" FontWeight="Bold" FontFamily="Yu Gothic UI Semibold" Foreground="#FFEFECE3" Content="Back to Login" Background="#FF183765" Click="btnBackToLogin_Click"/>
+        </Grid>
+        <!-- Enter Recovery Code Form -->
+        <Grid x:Name="ForgotCodeGrid" HorizontalAlignment="Left" Height="298" Margin="1073,298,0,0" VerticalAlignment="Top" Visibility="Collapsed">
+            <TextBox
+                Width="420" VerticalAlignment="Top" TextWrapping="Wrap" x:Name="txtEnterCode" Margin="0,99,0,0" Height="46" HorizontalAlignment="Left" FontSize="20" Foreground="#FF183765"/>
+            <Button x:Name="btnBack" Content="Back" HorizontalAlignment="Left" Margin="100,244,0,0" VerticalAlignment="Top" Height="54" Width="220" Foreground="#FFEFECE3" FontSize="20" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Background="#FF183765" Click="btnBack_Click"/>
+            <Button x:Name="btnSubmitCode" Content="SUBMIT" HorizontalAlignment="Left" Margin="0,162,0,0" VerticalAlignment="Top" Height="45" Width="420" Foreground="#FFEFECE3" FontSize="20" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Background="#FF8FABD4" Click="btnSubmitCode_Click"/>
+            <Label Content="Please enter the code that we have sent to your email." HorizontalAlignment="Left" Margin="9,63,0,0" VerticalAlignment="Top" FontSize="16" Foreground="#FF183765" FontFamily="Yu Gothic Medium" FontWeight="Bold"/>
+            <Label Content="Recovery Code Sent!" HorizontalAlignment="Left" Margin="37,0,0,0" VerticalAlignment="Top" FontSize="36" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Foreground="#FF183765"/>
+
+        </Grid>
+        <!-- Enter New Password Form -->
+        <Grid x:Name="ForgotNewPasswordGrid" HorizontalAlignment="Left" Height="271" Margin="1073,334,0,0" VerticalAlignment="Top" Width="420" Visibility="Collapsed">
+            <Label Content="Success!" HorizontalAlignment="Left" Margin="144,0,0,0" VerticalAlignment="Top" FontSize="36" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Foreground="#FF183765"/>
+            <Label Content="You can now enter your new password" HorizontalAlignment="Center" Margin="0,63,0,0" VerticalAlignment="Top" FontSize="16" Foreground="#FF183765" FontFamily="Yu Gothic Medium" FontWeight="Bold"/>
+            <TextBox Width="420" VerticalAlignment="Top" TextWrapping="Wrap" x:Name="txtNewPassword" Margin="0,99,0,0" Height="46" HorizontalAlignment="Center" FontSize="20" Foreground="#FF183765"/>
+            <TextBox Width="420" VerticalAlignment="Top" TextWrapping="Wrap" x:Name="txtConfirmNewPassword" Margin="0,162,0,0" Height="46" HorizontalAlignment="Center" FontSize="20" Foreground="#FF183765"/>
+            <Button x:Name="btnEnterNewPassword" Content="ENTER" HorizontalAlignment="Center" Margin="0,226,0,0" VerticalAlignment="Top" Height="45" Width="420" Foreground="#FFEFECE3" FontSize="20" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Background="#FF8FABD4" Click="btnEnterNewPassword_Click"/>
+        </Grid>
+        <!-- Password Change Success Form -->
+        <Grid x:Name="SuccessGrid" HorizontalAlignment="Left" Height="138" VerticalAlignment="Top" Width="474" Margin="1046,404,0,0" Visibility="Collapsed">
+            <Label Content="Success! Password Changed." HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="36" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Foreground="#FF183765"/>
+            <Button x:Name="btnBackToLogin_Copy" Content="Back to Login" HorizontalAlignment="Center" Margin="0,84,0,0" VerticalAlignment="Top" Height="54" Width="220" Foreground="#FFEFECE3" FontSize="20" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Background="#FF183765" Click="btnBackToLogin_Copy_Click"/>
         </Grid>
 
-        <TextBlock Text="REGISTER"
-           FontSize="22"
-           FontFamily="Yu Gothic UI Semibold"
-           FontWeight="Bold"
-           Foreground="#FF183765"
-           HorizontalAlignment="Left"
-           Margin="1232,727,0,0"
-           VerticalAlignment="Top"
-           Cursor="Hand"
-           MouseLeftButtonUp="Register_Click">
-            <TextBlock.Style>
-                <Style TargetType="TextBlock">
-                    <Setter Property="TextDecorations" Value="Underline"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" Value="#FF0A2657"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-        </TextBlock>
 
-        <Button x:Name="Login" Content="LOGIN" HorizontalAlignment="Left" Margin="1143,587,0,0" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" Foreground="#FF183765" Height="49" Width="275" Background="#FFEFECE3" BorderBrush="#FF183765" FontSize="20"/>
-        <Label Content="Not a member yet?" HorizontalAlignment="Left" Margin="1197,690,0,0" VerticalAlignment="Top" FontSize="20" FontFamily="Yu Gothic UI" Foreground="#FF183765"/>
+
+
+
     </Grid>
 </Window>
