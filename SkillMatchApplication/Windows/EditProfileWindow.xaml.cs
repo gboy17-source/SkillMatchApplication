@@ -36,7 +36,7 @@ namespace SkillMatchApplication.Windows
 
         private void btnChangePhoto_Click(object sender, RoutedEventArgs e)
         {
-
+            MessageBox.Show("Change Photo functionality not yet implemented.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

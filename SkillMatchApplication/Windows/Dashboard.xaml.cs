@@ -85,7 +85,7 @@ namespace SkillMatchApplication
 
         private void btnLogout_Click(object sender, RoutedEventArgs e)
         {
-            //Ask confirmation (professional!)
+            //Ask confirmation
             var result = MessageBox.Show(
                 "Are you sure you want to logout?",
                 "Logout",

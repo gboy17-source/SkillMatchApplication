@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         ResizeMode="CanMinimize"
         WindowStyle="SingleBorderWindow"
-        Title="SkillMatch" Height="1000" Width="1600" WindowStartupLocation="CenterOwner">
+        Title="SkillMatch" Height="1000" Width="1600" WindowStartupLocation="CenterOwner" Icon="/Resources/Logos/Logo.png">
     <!-- SkillMatch Left side -->
     <Grid x:Name="SkillMatch" Width="1600" Height="1000" Background="#FFEFECE3">
         <Rectangle HorizontalAlignment="Left" Height="100" Margin="-696,126,0,0" Stroke="Black" VerticalAlignment="Top" Width="100"/>
@@ -160,7 +160,7 @@
                 Margin="100,244,0,0" VerticalAlignment="Top" Width="220" x:Name="btnBackToLogin" Height="54" HorizontalAlignment="Left" FontSize="20" FontWeight="Bold" FontFamily="Yu Gothic UI Semibold" Foreground="#FFEFECE3" Content="Back to Login" Background="#FF183765" Click="btnBackToLogin_Click"/>
         </Grid>
         <!-- Enter Recovery Code Form -->
-        <Grid x:Name="ForgotCodeGrid" HorizontalAlignment="Left" Height="298" Margin="1073,298,0,0" VerticalAlignment="Top" Visibility="Collapsed">
+        <Grid x:Name="ForgotCodeGrid" HorizontalAlignment="Left" Height="298" Margin="1073,324,0,0" VerticalAlignment="Top" Visibility="Collapsed">
             <TextBox
                 Width="420" VerticalAlignment="Top" TextWrapping="Wrap" x:Name="txtEnterCode" Margin="0,99,0,0" Height="46" HorizontalAlignment="Left" FontSize="20" Foreground="#FF183765"/>
             <Button x:Name="btnBack" Content="Back" HorizontalAlignment="Left" Margin="100,244,0,0" VerticalAlignment="Top" Height="54" Width="220" Foreground="#FFEFECE3" FontSize="20" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Background="#FF183765" Click="btnBack_Click"/>
@@ -170,7 +170,7 @@
 
         </Grid>
         <!-- Enter New Password Form -->
-        <Grid x:Name="ForgotNewPasswordGrid" HorizontalAlignment="Left" Height="271" Margin="1073,334,0,0" VerticalAlignment="Top" Width="420" Visibility="Collapsed">
+        <Grid x:Name="ForgotNewPasswordGrid" HorizontalAlignment="Left" Height="271" Margin="1073,324,0,0" VerticalAlignment="Top" Width="420" Visibility="Collapsed">
             <Label Content="Success!" HorizontalAlignment="Left" Margin="144,0,0,0" VerticalAlignment="Top" FontSize="36" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Foreground="#FF183765"/>
             <Label Content="You can now enter your new password" HorizontalAlignment="Center" Margin="0,63,0,0" VerticalAlignment="Top" FontSize="16" Foreground="#FF183765" FontFamily="Yu Gothic Medium" FontWeight="Bold"/>
             <TextBox Width="420" VerticalAlignment="Top" TextWrapping="Wrap" x:Name="txtNewPassword" Margin="0,99,0,0" Height="46" HorizontalAlignment="Center" FontSize="20" Foreground="#FF183765"/>

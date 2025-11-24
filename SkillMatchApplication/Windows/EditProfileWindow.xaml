@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SkillMatchApplication.Windows"
         mc:Ignorable="d"
         ResizeMode="CanMinimize"
-        Title="EditProfileWindow" Height="920" Width="810" WindowStartupLocation="CenterScreen">
+        Title="EditProfileWindow" Height="920" Width="810" WindowStartupLocation="CenterScreen" Icon="/Resources/Logos/Logo.png">
     <Grid x:Name="EditProfile" Background="#FFEFECE3" Margin="0,0,0,-6" Height="920">
         <Grid Background="#FFEFECE3" Width="810" Height="920">
             <Ellipse x:Name="imgProfilePic" HorizontalAlignment="Center" Height="160" Margin="0,30,0,15" Stroke="Black" VerticalAlignment="Top" Width="160" Fill="#FFEAEAEA"/>
