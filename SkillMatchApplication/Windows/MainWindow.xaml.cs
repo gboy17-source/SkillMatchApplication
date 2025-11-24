@@ -46,7 +46,7 @@ namespace SkillMatchApplication
                 history.Push(page);
         }
 
-        //Back button functionality
+        //Login Button from LoginContent
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -102,6 +102,7 @@ namespace SkillMatchApplication
         ///<summary>
         ///Contents of Register 
         ///Backend not yet implemented
+       
         //Register link from LoginContent
         private void tbRegister_Click(object sender, MouseButtonEventArgs e)
         {

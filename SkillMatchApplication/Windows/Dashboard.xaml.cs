@@ -13,6 +13,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
+using SkillMatchApplication.Windows;
 
 namespace SkillMatchApplication
 {
@@ -71,8 +72,8 @@ namespace SkillMatchApplication
             //Close sidebar
             CloseSidebar();
 
-            //TODO: Open Edit Profile page/window
-            MessageBox.Show("Edit Profile clicked! Ready for your form.");
+            EditProfileWindow editProfile = new EditProfileWindow();
+            editProfile.Show(); 
         }
 
         private void btnSettings_Click(object sender, RoutedEventArgs e)
@@ -99,8 +100,9 @@ namespace SkillMatchApplication
                 var login = new MainWindow(); 
                 login.Show();
 
-                this.Close();// close dashboard
+                this.Close();//close dashboard
             }
         }
+
     }
 }

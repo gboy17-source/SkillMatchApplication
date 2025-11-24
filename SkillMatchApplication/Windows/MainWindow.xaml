@@ -7,11 +7,11 @@
         mc:Ignorable="d"
         ResizeMode="CanMinimize"
         WindowStyle="SingleBorderWindow"
-        Title="SkillMatch" Height="1000" Width="1600">
+        Title="SkillMatch" Height="1000" Width="1600" WindowStartupLocation="CenterOwner">
     <!-- SkillMatch Left side -->
     <Grid x:Name="SkillMatch" Width="1600" Height="1000" Background="#FFEFECE3">
         <Rectangle HorizontalAlignment="Left" Height="100" Margin="-696,126,0,0" Stroke="Black" VerticalAlignment="Top" Width="100"/>
-        <Image HorizontalAlignment="Left" Height="990" VerticalAlignment="Top" Width="974" Source="Resources/Logos/sm2.png" Margin="-15,0,0,0"/>
+        <Image HorizontalAlignment="Left" Height="990" VerticalAlignment="Top" Width="974" Source="/Resources/Logos/sm2.png" Margin="-15,0,0,0"/>
         <!-- Login Form -->
         <Grid x:Name="LoginContent" HorizontalAlignment="Left" Height="531" Margin="1086,225,0,0" VerticalAlignment="Top" Width="394">
             <Label Content="WELCOME!" HorizontalAlignment="Left" Margin="97,57,0,0" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="36" Foreground="#FF183765"/>
