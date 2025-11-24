@@ -50,6 +50,9 @@ namespace SkillMatchApplication
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            Dashboard dashboard = new Dashboard();
+            dashboard.Show();
+            this.Close();
         }
 
         /// <summary>
@@ -114,7 +117,9 @@ namespace SkillMatchApplication
         //Register button from RegisterContent
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
+
             MessageBox.Show("Registration successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            Show(LoginContent); //Back to login content after successfully registering
         }
         ///</summary>
     }
