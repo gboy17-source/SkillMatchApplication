@@ -9,11 +9,54 @@
         Title="Dashboard" Height="1020" Width="1600" Icon="/Resources/Logos/Logo.png" WindowStartupLocation="CenterScreen">
     <Grid x:Name="MainDashboardGrid" Margin="0,0,0,-6">
         <Grid x:Name="DasboardGrid" Background="#FFEFECE3" MinWidth="1600" MinHeight="1000" Margin="0,0,0,-19">
+            <!-- Top nav bar -->
             <Border BorderBrush="Black" BorderThickness="1" Background="Black" Margin="0,0,0,906" Height="97" VerticalAlignment="Top">
                 <DockPanel LastChildFill="False" Background="#FF8FABD4">
                     <Image Width="0" Stretch="None"/>
                     <Image Width="352" Source="/Resources/Logos/LogoWithTitle.png" Height="87"/>
                     <TextBlock x:Name="tbHamburger" TextWrapping="Wrap" Text="☰" FontSize="48" DockPanel.Dock="Right" Width="79" Height="68" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" MouseDown="tbHamburger_MouseDown"/>
+                    <!-- Buttons -->
+                    <Grid Width="1057" Height="93">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="btnDashboard" Content="DASHBOARD" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="24" Width="200" BorderBrush="{x:Null}" Click="btnDashboard_Click">
+                            <Button.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#00000000" Offset="0.367"/>
+                                    <GradientStop Color="#FF8FABD4" Offset="1"/>
+                                    <GradientStop Color="#00000000" Offset="0.898"/>
+                                </LinearGradientBrush>
+                            </Button.Background>
+                        </Button>
+                        <Button x:Name="btnMessages" Content="MESSAGES" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="24" Width="200" BorderBrush="{x:Null}" Grid.Column="1" Click="btnMessages_Click">
+                            <Button.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#00000000" Offset="0.898"/>
+                                    <GradientStop Color="#FF8FABD4" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Button.Background>
+                        </Button>
+                        <Button x:Name="btnSessions" Content="SESSIONS" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="24" Width="200" BorderBrush="{x:Null}" Grid.Column="2" Click="btnSessions_Click">
+                            <Button.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#00000000" Offset="0.901"/>
+                                    <GradientStop Color="#FF8FABD4" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Button.Background>
+                        </Button>
+                        <Button x:Name="btnNotifications" Content="NOTIFICATIONS" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="24" Width="200" BorderBrush="{x:Null}" Grid.Column="3" Click="btnNotifications_Click">
+                            <Button.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#00000000" Offset="0.907"/>
+                                    <GradientStop Color="#FF8FABD4" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Button.Background>
+                        </Button>
+                    </Grid>
                 </DockPanel>
             </Border>
             <!-- This is for dimming the Dashboard outside of the Sidebar-->
@@ -29,6 +72,60 @@
                     <Button x:Name="btnSettings" Content="Settings" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Background="#FF183765" Foreground="#FFEFECE3" Height="36" Margin="0,10,0,0" BorderBrush="Black" Click="btnSettings_Click"/>
                     <Button x:Name="btnLogout" Content="LOGOUT" HorizontalAlignment="Center" Margin="0,630,0,0" Width="235" Height="35" Foreground="#FF730000" Background="#FFEF5A5A" BorderBrush="#7F000000" BorderThickness="1,1,1,0" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" RenderTransformOrigin="0.511,0.566" Click="btnLogout_Click"/>
                 </StackPanel>
+            </Grid>
+            <!-- Messenger Grid -->
+            <Grid x:Name="MessengerGrid" Margin="40,124,40,28" Background="#FF224E83" Visibility="Collapsed">
+                <Grid Margin="0,2,995,0" ShowGridLines="True" Background="#FF8FABD4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1.5*"/>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock TextWrapping="Wrap" Text="You are chatting with:" Margin="180,10,179,205" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF183765"/>
+                    <Ellipse x:Name="elpsChatAvatar" Stroke="Black" Margin="192,39,192,60"/>
+                    <TextBlock x:Name="tbUser" TextWrapping="Wrap" Text="[USER]" Margin="0,195,0,0" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="16" VerticalAlignment="Top" HorizontalAlignment="Center" Foreground="#FF183765"/>
+                    <TextBlock TextWrapping="Wrap" Text="BIO:" Margin="0,10,0,0" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="16" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Row="1" Foreground="#FF183765"/>
+                    <TextBox x:Name="txtBio" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Width="486" Height="255" Grid.Row="1" IsReadOnly="True" Background="#FFEFECE3" BorderBrush="#FF193765" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" FontSize="16"/>
+                    <TextBox x:Name="txtBio_Copy" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="486" Height="116" Grid.Row="2" IsReadOnly="True" Background="#FFEFECE3" BorderBrush="#FF193765" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" FontSize="16" Margin="0,28,0,0"/>
+                    <TextBlock TextWrapping="Wrap" Text="This user want's to learn:" Margin="0,7,0,0" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="16" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Row="2" Foreground="#FF183765"/>
+                    <TextBox x:Name="txtWantToLearn" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="486" Height="116" IsReadOnly="True" Background="#FFEFECE3" BorderBrush="#FF193765" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" Grid.Row="3"  FontSize="16" Margin="0,28,0,0"/>
+                    <TextBlock TextWrapping="Wrap" Text="This user can teach:" Margin="0,7,0,0" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="16" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Row="3" Foreground="#FF183765"/>
+                </Grid>
+                <Grid x:Name="ChatMessages" Margin="550,0,0,17" ShowGridLines="True" Background="#FF8FABD4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="120"/>
+                    </Grid.RowDefinitions>
+                    <TextBox x:Name="txtMessage" 
+                        HorizontalAlignment="Left" 
+                        TextWrapping="Wrap" 
+                        VerticalAlignment="Center" 
+                        Width="835" 
+                        Height="75" 
+                        AcceptsReturn="True"
+                        Grid.Row="1" 
+                        Margin="10,0,0,0" PreviewKeyDown="txtMessage_PreviewKeyDown" />
+                    <!-- Messages Container -->
+                    <ScrollViewer x:Name="messageContainer" 
+                        VerticalScrollBarVisibility="Auto"
+                        HorizontalScrollBarVisibility="Disabled" Background="#FFD9DFE6">
+                        <StackPanel x:Name="messagesStackPanel"
+                            Orientation="Vertical"
+                            Margin="20,10,20,10">
+                            <!--All the bubbles go here -->
+                        </StackPanel>
+                    </ScrollViewer>
+                    <Button x:Name="btnSendMessage" Content="SEND" HorizontalAlignment="Left" Margin="865,0,0,0" Grid.Row="1" VerticalAlignment="Center" Height="75" Width="95" Background="#FF2D3965" FontFamily="Yu Gothic UI Semibold" FontSize="18" FontWeight="Bold" Foreground="#FFEFECE3"/>
+                </Grid>
+            </Grid>
+            <!-- Dashboard Content Grid -->
+            <Grid x:Name="dashboardContent" Margin="240,159,240,80" Background="#FF1A1A1A">
+                <Grid x:Name="welcomeGrid" Background="#FFE4D9BA" Margin="0,0,0,590"/>
+                <Grid x:Name="recommendedMatchesGrid" Background="#FFE4D9BA" Margin="0,480,0,0"/>
+                <Grid x:Name="ratingsGrid" Background="#FFE4D9BA" Margin="380,236,380,341"/>
+                <Grid x:Name="sessionsGrid" Background="#FFE4D9BA" Margin="10,236,750,340"/>
+                <Grid x:Name="matchesGrid" Background="#FFE4D9BA" Margin="750,236,10,340"/>
             </Grid>
         </Grid>
     </Grid>
