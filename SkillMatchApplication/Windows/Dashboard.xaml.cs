@@ -27,8 +27,30 @@ namespace SkillMatchApplication
         {
             InitializeComponent();
             SetActiveButton(btnDashboard); //Set Dashboard as active on load
+            //Show(dashboardContent);//Show dashboard content on load
             new MessagesTestWindow().Show();//open test window (Can be removed later)
             SetupChatInput();
+        }
+
+        private Stack<Grid> history = new Stack<Grid>();
+
+        public void Show(Grid page)
+        {
+            //dashboardContent.Visibility = Visibility.Collapsed;
+            MessengerGrid.Visibility = Visibility.Collapsed;
+            //SessionsGrid.Visibility = Visibility.Collapsed;
+            //NotificationsGrid.Visibility = Visibility.Collapsed;
+
+            page.Visibility = Visibility.Visible;
+
+            if (history.Count == 0 || history.Peek() != page)
+                history.Push(page);
+        }
+
+        // Static helper for dashboard navigation
+        public static void NavigateTo(Grid page)
+        {
+            Application.Current.Windows.OfType<Dashboard>().FirstOrDefault()?.Show(page);
         }
 
         private void OpenSidebar()
@@ -132,11 +154,14 @@ namespace SkillMatchApplication
         private void btnDashboard_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(btnDashboard);
+            //Show(dashboardContent);
         }
 
         private void btnMessages_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(btnMessages);
+            Show(MessengerGrid);
+            //dashboardContent.Visibility = Visibility.Collapsed;
         }
 
         private void btnSessions_Click(object sender, RoutedEventArgs e)
@@ -187,7 +212,7 @@ namespace SkillMatchApplication
             ScrollChatToBottom();//always scrolls, no matter who sent it
         }
 
-        //Call this once when the window loads (in constructor or Loaded event)
+        //Call this once when the window loads 
         private void SetupChatInput()
         {
             txtMessage.KeyDown += (sender, e) =>

@@ -28,7 +28,7 @@ namespace SkillMatchApplication
         }
 
         //Show a specific page
-        private void Show(Grid page)
+        public void Show(Grid page)
         {
             //Hide all possible pages
             LoginContent.Visibility = Visibility.Collapsed;
@@ -44,6 +44,12 @@ namespace SkillMatchApplication
             //Add to history (only if it's not already the current page)
             if (history.Count == 0 || history.Peek() != page)
                 history.Push(page);
+        }
+
+        //Navigate to a page from anywhere in the app
+        public static void NavigateTo(Grid page)
+        {
+            (Application.Current.MainWindow as MainWindow)?.Show(page);
         }
 
         //Login Button from LoginContent
