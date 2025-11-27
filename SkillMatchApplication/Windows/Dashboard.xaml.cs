@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 using SkillMatchApplication.Windows;
 using SkillMatchApplication.Models;
+using System.Windows.Media.Effects;
 
 namespace SkillMatchApplication
 {
@@ -28,11 +29,9 @@ namespace SkillMatchApplication
         public Dashboard()
         {
             InitializeComponent();
-
             SetActiveButton(btnDashboard); //Set Dashboard as active on load
-            Show(dashboardContent);//Show dashboard content on load
-
-           // new MessagesTestWindow().Show();//open test window (Can be removed later)
+            Show(dashboardContent);//Show dashboard content on load 
+            // new MessagesTestWindow().Show();//open test window (Can be removed later)
             SetupChatInput();
 
             //FAKE DATA — DELETE LATER WHEN DATABASE IS READY
@@ -61,8 +60,8 @@ namespace SkillMatchApplication
         {
             dashboardContent.Visibility = Visibility.Collapsed;
             MessengerGrid.Visibility = Visibility.Collapsed;
-            //SessionsGrid.Visibility = Visibility.Collapsed;
-            //NotificationsGrid.Visibility = Visibility.Collapsed;
+            SessionsGrid.Visibility = Visibility.Collapsed;
+           // NotificationsGrid.Visibility = Visibility.Collapsed;
 
             page.Visibility = Visibility.Visible;
 
@@ -179,7 +178,7 @@ namespace SkillMatchApplication
             SetActiveButton(btnDashboard);
             Show(dashboardContent);
             MessengerGrid.Visibility = Visibility.Collapsed;
-            //SessionsGrid.Visibility = Visibility.Collapsed;
+            SessionsGrid.Visibility = Visibility.Collapsed;
         }
 
         private void btnMessages_Click(object sender, RoutedEventArgs e)
@@ -187,7 +186,7 @@ namespace SkillMatchApplication
             SetActiveButton(btnMessages);
             Show(MessengerGrid);
             dashboardContent.Visibility = Visibility.Collapsed;
-            //SessionsGrid.Visibility = Visibility.Collapsed;
+            SessionsGrid.Visibility = Visibility.Collapsed;
         }
 
         private void btnSessions_Click(object sender, RoutedEventArgs e)
@@ -195,7 +194,7 @@ namespace SkillMatchApplication
             SetActiveButton(btnSessions);
             dashboardContent.Visibility = Visibility.Collapsed;
             MessengerGrid.Visibility = Visibility.Collapsed;
-            //Show(SessionsGrid);
+            Show(SessionsGrid);
         }
 
         private void btnNotifications_Click(object sender, RoutedEventArgs e)
@@ -203,7 +202,7 @@ namespace SkillMatchApplication
             SetActiveButton(btnNotifications);
             dashboardContent.Visibility = Visibility.Collapsed;
             MessengerGrid.Visibility = Visibility.Collapsed;
-            //SessionsGrid.Visibility = Visibility.Collapsed;
+            SessionsGrid.Visibility = Visibility.Collapsed;
         }
 
 

@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\FakeDatabase.cs" />
     <Compile Include="Models\MatchCard.cs" />
     <Compile Include="Models\SessionCard.cs" />
     <Compile Include="Windows\Dashboard.xaml.cs">

@@ -8,6 +8,45 @@
         ResizeMode="CanMinimize"
         Title="Dashboard" Height="1020" Width="1600" Icon="/Resources/Logos/Logo.png" WindowStartupLocation="CenterScreen">
     <Window.Resources>
+        
+        <!-- Data Template for Session Cards -->
+        <DataTemplate x:Key="SessionCardTemplate">
+            <Border Background="White" BorderBrush="LightGray" BorderThickness="1" Padding="20" Margin="0,0,0,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Date -->
+                    <Border Background="#6366F1" Width="80" Height="80" CornerRadius="16">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Day}" Foreground="White" FontSize="28" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Month}" Foreground="White" FontSize="18"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Text -->
+                    <StackPanel Grid.Column="1" Margin="20,0">
+                        <TextBlock Text="{Binding Skill}" FontSize="22" FontWeight="Bold"/>
+                        <TextBlock FontSize="16" Margin="0,5">
+                    <Run Text="{Binding PartnerName}"/>
+                    <Run Text=" (TEACH)" Foreground="Green" FontWeight="Bold"/>
+                    <Run Text=" (LEARN)" Foreground="Blue" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock Text="{Binding Time}" FontSize="16" Foreground="Gray"/>
+                    </StackPanel>
+
+                    <!-- Buttons -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0">
+                        <Button Content="Accept" Background="Green" Foreground="White" Margin="5"/>
+                        <Button Content="Reschedule" Background="Orange" Foreground="White" Margin="5"/>
+                        <Button Content="Cancel" Background="Red" Foreground="White" Margin="5"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
         <!-- Data Template for Match Cards -->
         <DataTemplate x:Key="MatchCardTemplate">
             <Grid>
@@ -251,6 +290,30 @@
             </Grid>
             <!-- This is for dimming the Dashboard outside of the Sidebar-->
             <Grid x:Name="Overlay" Background="#4C000000" MouseLeftButtonDown="Overlay_MouseLeftButtonDown" Visibility="Collapsed"/>
+           
+            <!-- Sessions Grid -->
+            <Grid x:Name="SessionsGrid" Background="#F5F5F5" Margin="159,133,159,66">
+                <TabControl Margin="60">
+                    <TabItem Header="Upcoming">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ListBox x:Name="lbUpcomingSessions"
+                         ItemTemplate="{DynamicResource SessionCardTemplate}"
+                         Background="Transparent"
+                         BorderThickness="0"/>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="Past">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ListBox x:Name="lbPastSessions"
+                         ItemTemplate="{DynamicResource SessionCardTemplate}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         Opacity="0.6"/>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+
             <!-- Sidebar Grid -->
             <Grid x:Name="SidebarGrid" Background="#FF8FABD4" Margin="1365,0,0,10" Width="235" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Visibility="Collapsed">
                 <!-- Sidebar Content -->
