@@ -34,6 +34,21 @@ namespace SkillMatchApplication
             // new MessagesTestWindow().Show();//open test window (Can be removed later)
             SetupChatInput();
 
+
+            // FAKE DATA — SHOWS IMMEDIATELY IN RUNTIME
+            lbUpcomingSessions.ItemsSource = new List<SessionCard>
+            {
+                new SessionCard { Day = "05", Month = "Dec", Skill = "React Basics", PartnerName = "Jane Smith", Time = "2:00 PM", IsTeaching = true },
+                new SessionCard { Day = "08", Month = "Dec", Skill = "Python Fundamentals", PartnerName = "Mike Johnson", Time = "10:00 AM", IsTeaching = false },
+                new SessionCard { Day = "15", Month = "Dec", Skill = "C# Advanced", PartnerName = "Alex Chen", Time = "4:00 PM", IsTeaching = true },
+                new SessionCard { Day = "20", Month = "Dec", Skill = "UI/UX Design", PartnerName = "Sarah Kim", Time = "6:00 PM", IsTeaching = false }
+            };
+
+            lbPastSessions.ItemsSource = new List<SessionCard>
+            {
+                new SessionCard { Day = "28", Month = "Nov", Skill = "Java OOP", PartnerName = "Anna Lee", Time = "3:00 PM", IsTeaching = true },
+                new SessionCard { Day = "12", Month = "Nov", Skill = "Git Basics", PartnerName = "Tom Brown", Time = "11:00 AM", IsTeaching = false }
+            };
             //FAKE DATA — DELETE LATER WHEN DATABASE IS READY
             lbRecommendedMatches.ItemsSource = new List<MatchCard>
             {

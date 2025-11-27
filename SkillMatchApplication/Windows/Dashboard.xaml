@@ -8,7 +8,6 @@
         ResizeMode="CanMinimize"
         Title="Dashboard" Height="1020" Width="1600" Icon="/Resources/Logos/Logo.png" WindowStartupLocation="CenterScreen">
     <Window.Resources>
-        
         <!-- Data Template for Session Cards -->
         <DataTemplate x:Key="SessionCardTemplate">
             <Border Background="White" BorderBrush="LightGray" BorderThickness="1" Padding="20" Margin="0,0,0,20">
@@ -31,11 +30,10 @@
                     <StackPanel Grid.Column="1" Margin="20,0">
                         <TextBlock Text="{Binding Skill}" FontSize="22" FontWeight="Bold"/>
                         <TextBlock FontSize="16" Margin="0,5">
-                    <Run Text="{Binding PartnerName}"/>
-                    <Run Text=" (TEACH)" Foreground="Green" FontWeight="Bold"/>
-                    <Run Text=" (LEARN)" Foreground="Blue" FontWeight="Bold"/>
+                            <Run Text="{Binding PartnerName}"/>
+                            <Run Text=" (TEACH)" Foreground="Green" FontWeight="Bold"/>
+                            <Run Text=" (LEARN)" Foreground="Blue" FontWeight="Bold"/>          
                         </TextBlock>
-                        <TextBlock Text="{Binding Time}" FontSize="16" Foreground="Gray"/>
                     </StackPanel>
 
                     <!-- Buttons -->
