@@ -27,68 +27,81 @@ namespace SkillMatchApplication.Windows
 
             _dashboard = Application.Current.Windows.OfType<Dashboard>().FirstOrDefault();
 
+            // Send as "Me"
             txtMyMessage.KeyDown += (s, e) =>
             {
-                if (e.Key == Key.Enter)
+                if (e.Key == Key.Enter && !Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
                 {
                     SendAsMe();
                     e.Handled = true;
                 }
             };
+
+            // Optional: Send as "Other"
+            btnSendAsOther.Click += (s, e) =>
+            {
+                if (!string.IsNullOrWhiteSpace(txtOtherMessage.Text))
+                {
+                    SendAsOther(txtOtherMessage.Text);
+                    txtOtherMessage.Clear();
+                }
+            };
+        }
+
+        private void btnSendAsOther_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtOtherMessage.Text))
+            {
+                string text = txtOtherMessage.Text.Trim();
+                txtOtherMessage.Clear();
+
+                // Add to test window
+                AddMessageToTest(text, false);
+
+                // Add to real Dashboard
+                _dashboard?.AddMessage(text, false);
+            }
         }
 
         private void SendAsMe()
         {
             if (string.IsNullOrWhiteSpace(txtMyMessage.Text)) return;
-
-            string text = txtMyMessage.Text;
+            string text = txtMyMessage.Text.Trim();
             txtMyMessage.Clear();
 
-            AddBubbleToTestWindow(text, true);
-
-            _dashboard?.AddMessageToChat(text, true);        
-            _dashboard?.ScrollChatToBottom();              
+            AddMessageToTest(text, true);
+            _dashboard?.AddMessage(text, true);  // ← now works!
         }
 
-        private void btnSendAsOther_Click(object sender, RoutedEventArgs e)
+        private void SendAsOther(string text)
         {
-            if (string.IsNullOrWhiteSpace(txtOtherMessage.Text)) return;
+            if (string.IsNullOrWhiteSpace(text)) return;
 
-            string text = txtOtherMessage.Text;
-            txtOtherMessage.Clear();
-
-            AddBubbleToTestWindow(text, false);
-
-            _dashboard?.AddMessageToChat(text, false);
-            _dashboard?.ScrollChatToBottom();              
+            AddMessageToTest(text, false);
+            _dashboard?.AddMessage(text, false);
         }
 
-        private void AddBubbleToTestWindow(string text, bool isMe) => AddBubble(messagesStackPanel, messageContainer, text, isMe);
-        private void AddBubbleToDashboard(string text, bool isMe) => AddBubble(_dashboard.messagesStackPanel, _dashboard.messageContainer, text, isMe);
-
-        private void AddBubble(Panel panel, ScrollViewer scrollViewer, string text, bool isMe)
+        private void AddMessageToTest(string text, bool isSent)
         {
             var bubble = new Border
             {
-                Background = isMe
-                    ? new SolidColorBrush(Color.FromRgb(143, 171, 212))
-                    : Brushes.LightGray,
-                CornerRadius = new CornerRadius(20),
-                Padding = new Thickness(16, 12, 16, 12),   // ← FIXED: 4 values
-                MaxWidth = 600,
-                HorizontalAlignment = isMe ? HorizontalAlignment.Right : HorizontalAlignment.Left,
-                Margin = new Thickness(15, 8, 15, 8),      // ← FIXED: 4 values
+                Background = isSent ? new SolidColorBrush(Color.FromRgb(30, 136, 229)) : new SolidColorBrush(Color.FromRgb(228, 230, 235)),
+                CornerRadius = new CornerRadius(18),
+                Padding = new Thickness(12, 10, 12, 10),
+                MaxWidth = 500,
+                HorizontalAlignment = isSent ? HorizontalAlignment.Right : HorizontalAlignment.Left,
+                Margin = new Thickness(10, 5, 10, 1),
                 Child = new TextBlock
                 {
                     Text = text,
-                    Foreground = isMe ? Brushes.White : Brushes.Black,
+                    Foreground = isSent ? Brushes.White : Brushes.Black,
                     TextWrapping = TextWrapping.Wrap,
                     FontSize = 15
                 }
             };
 
-            panel.Children.Add(bubble);
-            scrollViewer.ScrollToEnd();
+            messagesStackPanel.Children.Add(bubble);
+            messageContainer.ScrollToEnd();
         }
     }
 }

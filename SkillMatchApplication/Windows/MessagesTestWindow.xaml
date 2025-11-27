@@ -44,7 +44,7 @@
                              Background="#FF2A4470"
                              Foreground="#FFFFD0D0"
                              BorderBrush="#FF2A4470"/>
-                    <Button Content="Send as Other User"
+                    <Button x:Name="btnSendAsOther" Content="Send as Other User"
                             Width="200"
                             HorizontalAlignment="Right"
                             Background="#FFFF6B6B"

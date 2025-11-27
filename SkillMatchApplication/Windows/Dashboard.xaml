@@ -8,6 +8,8 @@
         ResizeMode="CanMinimize"
         Title="Dashboard" Height="1020" Width="1600" Icon="/Resources/Logos/Logo.png" WindowStartupLocation="CenterScreen">
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+<local:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
         <!-- Data Template for Session Cards -->
         <DataTemplate x:Key="SessionCardTemplate">
             <Border Background="White" BorderBrush="LightGray" BorderThickness="1" Padding="20" Margin="0,0,0,20">
@@ -17,7 +19,6 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
                     <!-- Date -->
                     <Border Background="#6366F1" Width="80" Height="80" CornerRadius="16">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -117,7 +118,7 @@
                                 </LinearGradientBrush>
                             </Button.Background>
                         </Button>
-                        <Button x:Name="btnNotifications" Content="MATCHES" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="24" Width="200" BorderBrush="{x:Null}" Grid.Column="3" Click="btnNotifications_Click">
+                        <Button x:Name="btnMatches" Content="MATCHES" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="24" Width="200" BorderBrush="{x:Null}" Grid.Column="3" Click="btnMatches_Click">
                             <Button.Background>
                                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                     <GradientStop Color="#00000000" Offset="0.907"/>
@@ -128,55 +129,134 @@
                     </Grid>
                 </DockPanel>
             </Border>
-            <!-- Messenger Grid -->
-            <Grid x:Name="MessengerGrid" Margin="40,102,40,50" Background="#FF224E83" Visibility="Collapsed">
-                <Grid Margin="0,2,995,0" ShowGridLines="True" Background="#FF8FABD4">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1.5*"/>
-                        <RowDefinition Height="2*"/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <!-- Chat User Info -->
-                    <TextBlock TextWrapping="Wrap" Text="You are chatting with:" Margin="180,10,179,205" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF183765"/>
-                    <Ellipse x:Name="elpsChatAvatar" Stroke="Black" Margin="192,39,192,60"/>
-                    <TextBlock x:Name="tbUser" TextWrapping="Wrap" Text="[USER]" Margin="0,195,0,0" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="16" VerticalAlignment="Top" HorizontalAlignment="Center" Foreground="#FF183765"/>
-                    <TextBlock TextWrapping="Wrap" Text="BIO:" Margin="0,5,0,0" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="16" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Row="1" Foreground="#FF183765"/>
-                    <TextBox x:Name="txtBio" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Width="486" Height="255" Grid.Row="1" IsReadOnly="True" Background="#FFEFECE3" BorderBrush="#FF193765" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" FontSize="16"/>
-                    <TextBox x:Name="txtBio_Copy" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="486" Height="116" Grid.Row="2" IsReadOnly="True" Background="#FFEFECE3" BorderBrush="#FF193765" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" FontSize="16" Margin="0,28,0,0"/>
-                    <TextBlock TextWrapping="Wrap" Text="This user want's to learn:" Margin="0,7,0,0" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="16" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Row="2" Foreground="#FF183765"/>
-                    <TextBox x:Name="txtWantToLearn" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="486" Height="116" IsReadOnly="True" Background="#FFEFECE3" BorderBrush="#FF193765" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" Grid.Row="3"  FontSize="16" Margin="0,28,0,0"/>
-                    <TextBlock TextWrapping="Wrap" Text="This user can teach:" Margin="0,7,0,0" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="16" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Row="3" Foreground="#FF183765"/>
+ 
+            
+            <!-- New Messenger Grid -->
+            <Grid x:Name="MessengerGrid" Background="#F0F2F5" Margin="105,102,105,32">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="350"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- LEFT PANEL - CONVERSATION LIST -->
+                <Border Background="#FFEFECE3" BorderBrush="#E4E6EB" BorderThickness="0,0,1,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Messages" FontSize="28" FontWeight="Bold" Margin="20" Foreground="#1C1E21"/>
+
+                        <!-- Search -->
+                        <TextBox x:Name="txtSearchConversation" 
+                     Text="Search conversations..." 
+                     Margin="20,10" 
+                     Padding="10" 
+                     FontSize="16"
+                     Background="#F0F2F5" 
+                     BorderBrush="#CED0D4" 
+                     BorderThickness="1"/>
+
+                        <!-- Conversation List -->
+                        <ListBox x:Name="lbConversations" 
+                             Grid.Row="1" 
+                             Background="#FFD6D3C9" 
+                             BorderThickness="0"
+                             SelectionChanged="lbConversations_SelectionChanged">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="10" Height="70">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Ellipse Width="50" Height="50" Fill="#1877F2">
+                                            <Ellipse.OpacityMask>
+                                                <ImageBrush ImageSource="{Binding Avatar}"/>
+                                            </Ellipse.OpacityMask>
+                                        </Ellipse>
+                                        <StackPanel Grid.Column="1" Margin="15,0">
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+                                            <TextBlock Text="{Binding LastMessage}" Foreground="#65676B" FontSize="14"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Column="1">
+                    <!-- CHAT AREA — VISIBLE WHEN IsConversationSelected = true -->
+                    <Grid Visibility="{Binding IsConversationSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Header -->
+                        <Border Background="White" BorderBrush="#E4E6EB" BorderThickness="0,0,0,1">
+                            <TextBlock x:Name="tbChatWith" Text="" FontSize="20" FontWeight="Bold" Margin="20" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <!-- Messages -->
+                        <ScrollViewer x:Name="messageScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20">
+                            <ItemsControl x:Name="messagesPanel">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border MaxWidth="600" Margin="10,5" CornerRadius="18" Padding="12,10">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#E4E6EB"/>
+                                                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSent}" Value="True">
+                                                            <Setter Property="Background" Value="#1877F2"/>
+                                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock Text="{Binding Text}" Foreground="Black" TextWrapping="Wrap"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <!-- Input -->
+                        <Border Grid.Row="2" Background="#FF8FABD4" BorderBrush="#E4E6EB" BorderThickness="0,1,0,0" Padding="20">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="txtMessage" FontSize="16" Padding="15" BorderBrush="#CED0D4" BorderThickness="1" KeyDown="txtMessage_KeyDown"/>
+                                <Button Grid.Column="1" Content="Send" Background="#1877F2" Foreground="White" Padding="20,12" Margin="10,0,0,0" Click="btnSend_Click"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <!-- PLACEHOLDER — VISIBLE WHEN NO CONVERSATION -->
+                    <Grid Background="#F0F2F5" Visibility="{Binding IsConversationSelected, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock Text="👤" FontSize="80" Margin="0,0,0,20"/>
+                            <TextBlock Text="Select a conversation" FontSize="24" FontWeight="Bold" Foreground="#8E8E8E"/>
+                            <TextBlock Text="Choose a conversation from the list to start messaging" Foreground="#8E8E8E"/>
+                        </StackPanel>
+                    </Grid>
                 </Grid>
 
-                <!-- Chat Messages Grid -->
-                <Grid x:Name="ChatMessages" Margin="550,0,0,17" ShowGridLines="True" Background="#FF8FABD4">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="120"/>
-                    </Grid.RowDefinitions>
-                    <TextBox x:Name="txtMessage" 
-                        HorizontalAlignment="Left" 
-                        TextWrapping="Wrap" 
-                        VerticalAlignment="Center" 
-                        Width="835" 
-                        Height="75" 
-                        AcceptsReturn="True"
-                        Grid.Row="1" 
-                        Margin="10,0,0,0" PreviewKeyDown="txtMessage_PreviewKeyDown" />
-                    <!-- Messages Container -->
-                    <ScrollViewer x:Name="messageContainer" 
-                        VerticalScrollBarVisibility="Auto"
-                        HorizontalScrollBarVisibility="Disabled" Background="#FFD9DFE6">
-                        <StackPanel x:Name="messagesStackPanel"
-                            Orientation="Vertical"
-                            Margin="20,10,20,10">
-                            <!--All the bubbles go here -->
-                        </StackPanel>
-                    </ScrollViewer>
-                    <Button x:Name="btnSendMessage" Content="SEND" HorizontalAlignment="Left" Margin="865,0,0,0" Grid.Row="1" VerticalAlignment="Center" Height="75" Width="95" Background="#FF2D3965" FontFamily="Yu Gothic UI Semibold" FontSize="18" FontWeight="Bold" Foreground="#FFEFECE3"/>
+                <!-- "Select a conversation" placeholder when no one is selected -->
+                <Grid Grid.Column="1" Background="#F0F2F5" Visibility="{Binding IsConversationSelected, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Select a conversation" FontSize="24" FontWeight="Bold" Foreground="#8E8E8E" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Choose a conversation from the list to start messaging" Foreground="#8E8E8E" HorizontalAlignment="Center"/>
+                    </StackPanel>
                 </Grid>
             </Grid>
+
             <!-- Dashboard Content Grid -->
             <Grid x:Name="dashboardContent" Margin="80,119,80,46" Background="#33C6E4EE" Visibility="Collapsed">
                 <Grid Margin="0,0,0,685">
@@ -286,11 +366,8 @@
                 </Grid>
                 <Grid Height="100" Width="100"/>
             </Grid>
-            <!-- This is for dimming the Dashboard outside of the Sidebar-->
-            <Grid x:Name="Overlay" Background="#4C000000" MouseLeftButtonDown="Overlay_MouseLeftButtonDown" Visibility="Collapsed"/>
-           
             <!-- Sessions Grid -->
-            <Grid x:Name="SessionsGrid" Background="#F5F5F5" Margin="159,133,159,66">
+            <Grid x:Name="SessionsGrid" Background="#F5F5F5" Margin="159,133,159,66" Visibility="Collapsed">
                 <TabControl Margin="60">
                     <TabItem Header="Upcoming">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -311,7 +388,67 @@
                     </TabItem>
                 </TabControl>
             </Grid>
+            <!-- Matches Grid -->
+            <Grid x:Name="MatchesGrid" Background="#FFEFECE3" Margin="118,154,118,95" Visibility="Collapsed">
+                <ScrollViewer Margin="60,40" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <!-- Title -->
+                        <TextBlock Text="Find Your Learning Partner" 
+                       FontSize="36" FontWeight="Bold" 
+                       Foreground="#1E293B" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,20"/>
 
+                        <TextBlock Text="Discover students who can teach you new skills or learn from your expertise." 
+                       FontSize="18" 
+                       Foreground="#64748B" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,40"/>
+
+                        <!-- Search + Filter Bar -->
+                        <Grid HorizontalAlignment="Center" Width="800" Margin="0,0,0,40">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="White" CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1" Padding="15">
+                                <DockPanel>
+                                    <TextBlock Text="🔍" DockPanel.Dock="Left" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                    <TextBox 
+                                     x:Name="SearchBox" Text=" "
+                                     FontSize="16" 
+                                     BorderThickness="0" 
+                                     Background="Transparent"
+                                     TextChanged="SearchBox_TextChanged"
+                                     KeyDown="SearchBox_KeyDown"/>
+                                </DockPanel>
+                            </Border>
+                            <Button Content="Filters" 
+                        Grid.Column="1" 
+                        Background="#6366F1" 
+                        Foreground="White" 
+                        Padding="20,15" 
+                        Margin="20,0,0,0"/>
+                        </Grid>
+
+                        <!-- Matches List -->
+                        <ListBox x:Name="lbAllMatches" 
+                             ItemTemplate="{DynamicResource MatchCardTemplate}"
+                             Background="Transparent" 
+                             BorderThickness="0" SelectionChanged="lbAllMatches_SelectionChanged">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" 
+                                   HorizontalAlignment="Center"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+            <!-- This is for dimming the Dashboard outside of the Sidebar-->
+            <Grid x:Name="Overlay" Background="#4C000000" MouseLeftButtonDown="Overlay_MouseLeftButtonDown" Visibility="Collapsed"/>
             <!-- Sidebar Grid -->
             <Grid x:Name="SidebarGrid" Background="#FF8FABD4" Margin="1365,0,0,10" Width="235" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Visibility="Collapsed">
                 <!-- Sidebar Content -->
