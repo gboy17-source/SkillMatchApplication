@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 using SkillMatchApplication.Windows;
+using SkillMatchApplication.Models;
 
 namespace SkillMatchApplication
 {
@@ -22,21 +23,43 @@ namespace SkillMatchApplication
     /// </summary>
     public partial class Dashboard : Window
     {
+        
         private bool isOpen = false;
         public Dashboard()
         {
             InitializeComponent();
+
             SetActiveButton(btnDashboard); //Set Dashboard as active on load
-            //Show(dashboardContent);//Show dashboard content on load
-            new MessagesTestWindow().Show();//open test window (Can be removed later)
+            Show(dashboardContent);//Show dashboard content on load
+
+           // new MessagesTestWindow().Show();//open test window (Can be removed later)
             SetupChatInput();
+
+            //FAKE DATA — DELETE LATER WHEN DATABASE IS READY
+            lbRecommendedMatches.ItemsSource = new List<MatchCard>
+            {
+                new MatchCard {Name = "Jane Smith",     Skill = "Python, CS, Fortnite, Siege, Minecraft,",   Rating = 4.9 },
+                new MatchCard {Name = "Mike Johnson",   Skill = "Java",     Rating = 4.7 },
+                new MatchCard {Name = "John Doe",       Skill = "React",    Rating = 4.8 },
+                new MatchCard {Name = "Anna Smith",     Skill = "C#",       Rating = 5.0 },
+                new MatchCard {Name = "Tom Lee",        Skill = "Design",   Rating = 4.6 },
+                new MatchCard {Name = "Sara Connor",   Skill = "Machine Learning", Rating = 4.9 },
+                new MatchCard {Name = "David Kim",     Skill = "DevOps",   Rating = 4.5 },
+                new MatchCard {Name = "Linda Park",   Skill = "UI/UX",    Rating = 4.8 },
+                new MatchCard {Name = "James Wilson", Skill = "Ruby on Rails", Rating = 4.7 },
+                new MatchCard {Name = "Emily Davis",  Skill = "Data Science", Rating = 4.9 },
+                new MatchCard {Name = "Chris Brown",  Skill = "Mobile Development", Rating = 4.6 },
+                new MatchCard {Name = "Olivia Garcia",Skill = "Cybersecurity", Rating = 4.8 },
+                new MatchCard {Name = "Daniel Martinez",Skill = "Cloud Computing", Rating = 4.7 },
+                new MatchCard {Name = "Sophia Hernandez",Skill = "Project Management", Rating = 4.9 },
+            };
         }
 
         private Stack<Grid> history = new Stack<Grid>();
 
         public void Show(Grid page)
         {
-            //dashboardContent.Visibility = Visibility.Collapsed;
+            dashboardContent.Visibility = Visibility.Collapsed;
             MessengerGrid.Visibility = Visibility.Collapsed;
             //SessionsGrid.Visibility = Visibility.Collapsed;
             //NotificationsGrid.Visibility = Visibility.Collapsed;
@@ -154,24 +177,33 @@ namespace SkillMatchApplication
         private void btnDashboard_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(btnDashboard);
-            //Show(dashboardContent);
+            Show(dashboardContent);
+            MessengerGrid.Visibility = Visibility.Collapsed;
+            //SessionsGrid.Visibility = Visibility.Collapsed;
         }
 
         private void btnMessages_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(btnMessages);
             Show(MessengerGrid);
-            //dashboardContent.Visibility = Visibility.Collapsed;
+            dashboardContent.Visibility = Visibility.Collapsed;
+            //SessionsGrid.Visibility = Visibility.Collapsed;
         }
 
         private void btnSessions_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(btnSessions);
+            dashboardContent.Visibility = Visibility.Collapsed;
+            MessengerGrid.Visibility = Visibility.Collapsed;
+            //Show(SessionsGrid);
         }
 
         private void btnNotifications_Click(object sender, RoutedEventArgs e)
         {
             SetActiveButton(btnNotifications);
+            dashboardContent.Visibility = Visibility.Collapsed;
+            MessengerGrid.Visibility = Visibility.Collapsed;
+            //SessionsGrid.Visibility = Visibility.Collapsed;
         }
 
 
@@ -257,5 +289,37 @@ namespace SkillMatchApplication
                 btnSendMessage.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             }
         }
+
+        private void lbRecommendedMatches_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lbRecommendedMatches.SelectedItem is MatchCard selected)
+            {
+                var schedule = new ScheduleSessionWindow();
+                schedule.Owner = this;                                   // centers it
+                schedule.Title = $"Schedule Session with {selected.Name}";
+                schedule.ShowDialog();                                   // modal window
+
+                lbRecommendedMatches.SelectedItem = null;                // allow re-click
+            }
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

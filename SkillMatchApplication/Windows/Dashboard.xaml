@@ -7,6 +7,38 @@
         mc:Ignorable="d"
         ResizeMode="CanMinimize"
         Title="Dashboard" Height="1020" Width="1600" Icon="/Resources/Logos/Logo.png" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <!-- Data Template for Match Cards -->
+        <DataTemplate x:Key="MatchCardTemplate">
+            <Grid>
+                <Border BorderBrush="Black" BorderThickness="1" Height="150" Width="300" Background="#FFEFECE3" CornerRadius="30,30,30,30">
+                    <Border.Effect>
+                        <DropShadowEffect/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="90*"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Ellipse HorizontalAlignment="Left" Height="70" Margin="10,35,0,0" Stroke="Black" VerticalAlignment="Top" Width="70">
+                            <Ellipse.Fill>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#FFB2EEEF"/>
+                                    <GradientStop Color="#FF2B4D90" Offset="0.892"/>
+                                    <GradientStop Color="#FF5371E8" Offset="0.377"/>
+                                </LinearGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <StackPanel Margin="60,18,30,30" Background="{x:Null}" Width="200">
+                            <TextBlock x:Name="tbMatchesName" TextWrapping="Wrap" Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Stretch" Foreground="#FF183765" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Background="#3FC6E4EE" FontSize="18" Margin="0,0,0,0" Padding="0,0,0,0" />
+                            <TextBlock x:Name="tbMatchesSkills" TextWrapping="Wrap" Text="{Binding Skill}" Foreground="#FF183765" FontWeight="Bold" Padding="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+                            <TextBlock x:Name="tbMatchesRating" TextWrapping="Wrap" Text="{Binding Rating, StringFormat='★ {0:F1}'}" Padding="0,0,0,0" FontFamily="Yu Gothic UI" FontWeight="Bold" Foreground="#FFFE8132" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" FontSize="10"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
     <Grid x:Name="MainDashboardGrid" Margin="0,0,0,-6">
         <Grid x:Name="DasboardGrid" Background="#FFEFECE3" MinWidth="1600" MinHeight="1000" Width="0" Height="0">
             <!-- Top nav bar -->
@@ -48,7 +80,7 @@
                                 </LinearGradientBrush>
                             </Button.Background>
                         </Button>
-                        <Button x:Name="btnNotifications" Content="NOTIFICATIONS" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="24" Width="200" BorderBrush="{x:Null}" Grid.Column="3" Click="btnNotifications_Click">
+                        <Button x:Name="btnNotifications" Content="MATCHES" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFEFECE3" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="24" Width="200" BorderBrush="{x:Null}" Grid.Column="3" Click="btnNotifications_Click">
                             <Button.Background>
                                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                     <GradientStop Color="#00000000" Offset="0.907"/>
@@ -59,8 +91,6 @@
                     </Grid>
                 </DockPanel>
             </Border>
-            <!-- This is for dimming the Dashboard outside of the Sidebar-->
-            <Grid x:Name="Overlay" Background="#4C000000" MouseLeftButtonDown="Overlay_MouseLeftButtonDown" Visibility="Collapsed"/>
             <!-- Messenger Grid -->
             <Grid x:Name="MessengerGrid" Margin="40,102,40,50" Background="#FF224E83" Visibility="Collapsed">
                 <Grid Margin="0,2,995,0" ShowGridLines="True" Background="#FF8FABD4">
@@ -110,6 +140,117 @@
                     <Button x:Name="btnSendMessage" Content="SEND" HorizontalAlignment="Left" Margin="865,0,0,0" Grid.Row="1" VerticalAlignment="Center" Height="75" Width="95" Background="#FF2D3965" FontFamily="Yu Gothic UI Semibold" FontSize="18" FontWeight="Bold" Foreground="#FFEFECE3"/>
                 </Grid>
             </Grid>
+            <!-- Dashboard Content Grid -->
+            <Grid x:Name="dashboardContent" Margin="80,119,80,46" Background="#33C6E4EE" Visibility="Collapsed">
+                <Grid Margin="0,0,0,685">
+                    <Rectangle x:Name="welcomeContainer" HorizontalAlignment="Center" Height="150" Stroke="Black" VerticalAlignment="Center" Width="1440" RadiusX="30" RadiusY="30" Fill="#FF8FABD4" StrokeThickness="0.5"/>
+                    <TextBlock x:Name="tbWelcomeUser" HorizontalAlignment="Left" Margin="80,0,0,0" TextWrapping="Wrap" Text="Welcome, [USER]" VerticalAlignment="Center" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="36" Foreground="#FFEFECE3"/>
+                    <Ellipse x:Name="elpsDashboardAvatar" HorizontalAlignment="Left" Height="130" VerticalAlignment="Center" Width="130" Margin="1215,0,0,0" Stroke="#FF183765">
+                        <Ellipse.Fill>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFB2EEEF"/>
+                                <GradientStop Color="#FF2B4D90" Offset="0.87"/>
+                                <GradientStop Color="#FF5371E8" Offset="0.398"/>
+                            </LinearGradientBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                </Grid>
+                <Grid x:Name="totalSessionsGrid" Margin="0,170,1040,535">
+                    <Rectangle x:Name="totalSessionsContainer" HorizontalAlignment="Center" Height="130" Stroke="Black" VerticalAlignment="Center" Width="400" RadiusX="30" RadiusY="30" Fill="#FF8FABD4" StrokeThickness="0.5"/>
+                    <Rectangle HorizontalAlignment="Left" Height="78" Margin="10,0,0,0" VerticalAlignment="Center" Width="110" RadiusX="30" RadiusY="30" RenderTransformOrigin="0.5,0.5">
+                        <Rectangle.Fill>
+                            <ImageBrush Stretch="None" TileMode="None" ImageSource="/Resources/Logos/icon_Calendar.png"/>
+                        </Rectangle.Fill>
+                        <Rectangle.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="0"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+                    <TextBlock x:Name="tbTotalSessions" HorizontalAlignment="Left" Margin="110,26,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="36" Foreground="#FFEFECE3"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="110,74,0,0" TextWrapping="Wrap" Text="Total Sessions" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Foreground="#FFEFECE3" FontSize="16"/>
+                </Grid>
+                <Grid Margin="521,170,521,535">
+                    <Rectangle x:Name="ratingContainer" HorizontalAlignment="Center" Height="130" Stroke="Black" VerticalAlignment="Center" Width="398" RadiusX="30" RadiusY="30" Fill="#FF8FABD4" StrokeThickness="0.5"/>
+                    <Rectangle HorizontalAlignment="Left" Height="78" Margin="14,0,0,0" VerticalAlignment="Center" Width="110" RadiusX="30" RadiusY="30" RenderTransformOrigin="0.5,0.5">
+                        <Rectangle.Fill>
+                            <ImageBrush ImageSource="/Resources/Logos/icon_Star.png" Stretch="None" TileMode="None"/>
+                        </Rectangle.Fill>
+                        <Rectangle.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="0"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+                    <TextBlock x:Name="tbRatings" HorizontalAlignment="Left" Margin="115,26,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="36" Foreground="#FFEFECE3"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="115,74,0,0" TextWrapping="Wrap" Text="Average Ratings" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Foreground="#FFEFECE3" FontSize="16"/>
+                </Grid>
+                <Grid Margin="1040,170,0,535">
+                    <Rectangle x:Name="matchesContainer" HorizontalAlignment="Center" Height="130" Stroke="Black" VerticalAlignment="Center" Width="398" RadiusX="30" RadiusY="30" Fill="#FF8FABD4" StrokeThickness="0.5"/>
+                    <Rectangle HorizontalAlignment="Left" Height="78" Margin="10,0,0,0" VerticalAlignment="Center" Width="110" RadiusX="30" RadiusY="30" RenderTransformOrigin="0.5,0.5">
+                        <Rectangle.Fill>
+                            <ImageBrush ImageSource="/Resources/Logos/icon_newMatches.png" Stretch="None" TileMode="None"/>
+                        </Rectangle.Fill>
+                        <Rectangle.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="0"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+                    <TextBlock x:Name="tbNewMatches" HorizontalAlignment="Left" Margin="110,26,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="36" Foreground="#FFEFECE3"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="110,74,0,0" TextWrapping="Wrap" Text="New Matches" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Foreground="#FFEFECE3" FontSize="16"/>
+                </Grid>
+                <Grid Margin="0,320,0,255">
+                    <Rectangle x:Name="upcomingSessionsContainer" HorizontalAlignment="Center" Height="260" Stroke="Black" VerticalAlignment="Center" Width="1440" RadiusX="30" RadiusY="30" Fill="#FF8FABD4" StrokeThickness="0.5"/>
+                    <Grid x:Name="upcomingGrid" Margin="25,10,20,10" Background="#0DE9F2FF">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="7*"/>
+                            <RowDefinition Height="41*"/>
+                        </Grid.RowDefinitions>
+                        <Rectangle HorizontalAlignment="Center" Height="150" Margin="0,45,0,0" Stroke="Black" VerticalAlignment="Top" Width="1395" RadiusX="30" RadiusY="30" StrokeThickness="0.5" Fill="#AADFFFFA" Grid.Row="1"/>
+                        <TextBlock HorizontalAlignment="Left" Margin="0,22,0,0" TextWrapping="Wrap" Text="Upcoming Sessions" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="36" Foreground="#FFEFECE3" Grid.RowSpan="2"/>
+                        <Button x:Name="btnViewAllSessions" Content="→ View All" HorizontalAlignment="Left" Margin="1205,26,0,0" VerticalAlignment="Top" Height="44" Width="180" FontSize="24" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Foreground="#FF183765" Opacity="0.67" Grid.RowSpan="2"/>
+                        <TextBlock x:Name="tbSessionStatus" HorizontalAlignment="Left" Margin="1237,103,0,0" TextWrapping="Wrap" Text="Confirmed" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Foreground="#FF59A93C" FontSize="24" Grid.Row="1"/>
+                        <TextBlock x:Name="tbUpcomingSkills" HorizontalAlignment="Left" Margin="113,0,0,0" TextWrapping="Wrap" Text="React" VerticalAlignment="Center" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="36" Foreground="#FF183765" Grid.Row="1"/>
+                        <TextBlock x:Name="tbWithUser" HorizontalAlignment="Left" Margin="113,131,0,0" TextWrapping="Wrap" Text="with [USER] " VerticalAlignment="Top" FontFamily="Yu Gothic UI Semilight" FontWeight="Bold" Foreground="#FF183765" FontSize="16" Grid.Row="1"/>
+                        <TextBlock x:Name="tbTime" HorizontalAlignment="Left" Margin="40,162,0,0" TextWrapping="Wrap" Text="2:00 PM" VerticalAlignment="Top" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Foreground="#FF183765" FontSize="16" Grid.Row="1"/>
+                        <!-- Date Border -->
+                        <Border BorderThickness="1" Grid.Row="1" Margin="35,87,0,48" Width="70" Height="70" Background="#FF183765" CornerRadius="14,14,14,14" HorizontalAlignment="Left">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock x:Name="tbDay" TextWrapping="Wrap" Text="27" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Foreground="#FFEFECE3" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22"/>
+                                <TextBlock x:Name="tbMonth" TextWrapping="Wrap" Text="NOV" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFC6E4EE" FontSize="22"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+                <Grid Margin="0,600,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="349*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="9*"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle x:Name="recommendedMatchesContainer" HorizontalAlignment="Left" Height="235" Stroke="Black" VerticalAlignment="Center" Width="1440" RadiusX="30" RadiusY="30" Fill="#FF8FABD4" StrokeThickness="0.5" Grid.ColumnSpan="3"/>
+                    <ListBox ItemTemplate="{DynamicResource MatchCardTemplate}" x:Name="lbRecommendedMatches" d:ItemsSource="{d:SampleData ItemCount=5}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Background="{x:Null}" Margin="21,10,22,19" Grid.ColumnSpan="3" SelectionChanged="lbRecommendedMatches_SelectionChanged">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Width="1396" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+                </Grid>
+                <Grid Height="100" Width="100"/>
+            </Grid>
+            <!-- This is for dimming the Dashboard outside of the Sidebar-->
+            <Grid x:Name="Overlay" Background="#4C000000" MouseLeftButtonDown="Overlay_MouseLeftButtonDown" Visibility="Collapsed"/>
             <!-- Sidebar Grid -->
             <Grid x:Name="SidebarGrid" Background="#FF8FABD4" Margin="1365,0,0,10" Width="235" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Visibility="Collapsed">
                 <!-- Sidebar Content -->
@@ -121,17 +262,6 @@
                     <Button x:Name="btnSettings" Content="Settings" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" Background="#FF183765" Foreground="#FFEFECE3" Height="36" Margin="0,10,0,0" BorderBrush="Black" Click="btnSettings_Click"/>
                     <Button x:Name="btnLogout" Content="LOGOUT" HorizontalAlignment="Center" Margin="0,630,0,0" Width="235" Height="35" Foreground="#FF730000" Background="#FFEF5A5A" BorderBrush="#7F000000" BorderThickness="1,1,1,0" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" RenderTransformOrigin="0.511,0.566" Click="btnLogout_Click"/>
                 </StackPanel>
-            </Grid>
-            <Grid x:Name="dashboardContent" Margin="80,119,80,46" Background="#89DA8B8B">
-                <Grid Background="#FF8FABD4" Margin="0,0,0,685">
-                    <TextBlock x:Name="tbWelcomeUser" HorizontalAlignment="Left" Margin="240,0,0,0" TextWrapping="Wrap" Text="Welcome, [USER]" VerticalAlignment="Center" FontFamily="Yu Gothic UI Semibold" FontWeight="Bold" FontSize="36" Foreground="#FFEFECE3"/>
-                    <Ellipse x:Name="elpsDashboardAvatar" HorizontalAlignment="Left" Height="130" Margin="1200,0,0,0" Stroke="Black" VerticalAlignment="Center" Width="130"/>
-                </Grid>
-                <Grid Background="#FF8FABD4" Margin="0,170,1040,535"/>
-                <Grid Background="#FF8FABD4" Margin="521,170,521,535"/>
-                <Grid Background="#FF8FABD4" Margin="1040,170,0,535"/>
-                <Grid Background="#FF8FABD4" Margin="0,320,0,255"/>
-                <Grid Background="#FF8FABD4" Margin="0,600,0,0"/>
             </Grid>
         </Grid>
     </Grid>

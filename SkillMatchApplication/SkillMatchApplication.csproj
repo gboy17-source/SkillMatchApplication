@@ -55,11 +55,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\MatchCard.cs" />
+    <Compile Include="Models\SessionCard.cs" />
     <Compile Include="Windows\Dashboard.xaml.cs">
       <DependentUpon>Dashboard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\MessagesTestWindow.xaml.cs">
       <DependentUpon>MessagesTestWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ScheduleSessionWindow.xaml.cs">
+      <DependentUpon>ScheduleSessionWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Windows\Dashboard.xaml">
       <SubType>Designer</SubType>
@@ -85,6 +90,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Windows\MessagesTestWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ScheduleSessionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -126,6 +135,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Logos\icon_Chats.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Logos\icon_Star.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Logos\icon_newMatches.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Logos\icon_Calendar.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

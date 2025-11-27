@@ -1,0 +1,42 @@
+﻿<Window x:Class="SkillMatchApplication.Windows.ScheduleSessionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SkillMatchApplication.Windows"
+        mc:Ignorable="d"
+        Title="ScheduleSessionWindow" Height="264" Width="363" Background="#FFEFECE3" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <DatePicker HorizontalAlignment="Center" Margin="0,52,0,0" VerticalAlignment="Top" Height="34" FontSize="18" SelectedDateFormat="Short"/>
+        <ComboBox HorizontalAlignment="Center" Margin="0,131,0,0" VerticalAlignment="Top" Width="120" IsEditable="True">
+            <ComboBoxItem Content="12:00 AM"/>
+            <ComboBoxItem Content="1:00 AM"/>
+            <ComboBoxItem Content="2:00 AM"/>
+            <ComboBoxItem Content="3:00 AM"/>
+            <ComboBoxItem Content="4:00 AM"/>
+            <ComboBoxItem Content="5:00 AM"/>
+            <ComboBoxItem Content="6:00 AM"/>
+            <ComboBoxItem Content="7:00 AM"/>
+            <ComboBoxItem Content="8:00 AM"/>
+            <ComboBoxItem Content="9:00 AM"/>
+            <ComboBoxItem Content="10:00 AM"/>
+            <ComboBoxItem Content="11:00 AM"/>
+            <ComboBoxItem Content="12:00 PM"/>
+            <ComboBoxItem Content="1:00 PM"/>
+            <ComboBoxItem Content="2:00 PM"/>
+            <ComboBoxItem Content="3:00 PM"/>
+            <ComboBoxItem Content="4:00 PM"/>
+            <ComboBoxItem Content="5:00 PM"/>
+            <ComboBoxItem Content="6:00 PM"/>
+            <ComboBoxItem Content="7:00 PM"/>
+            <ComboBoxItem Content="8:00 PM"/>
+            <ComboBoxItem Content="9:00 PM"/>
+            <ComboBoxItem Content="10:00 PM"/>
+            <ComboBoxItem Content="11:00 PM"/>
+            <ComboBoxItem Content="12:00 PM"/>
+        </ComboBox>
+        <TextBlock HorizontalAlignment="Center" Margin="0,110,0,0" TextWrapping="Wrap" Text="PICK TIME" VerticalAlignment="Top"/>
+        <Button x:Name="btnRequestSession" Content="Request Session" HorizontalAlignment="Center" Margin="0,170,0,0" VerticalAlignment="Top" Width="134" Height="42" Background="#FF183765" Foreground="#FFEFECE3" FontWeight="Bold" FontFamily="Yu Gothic UI"/>
+
+    </Grid>
+</Window>
