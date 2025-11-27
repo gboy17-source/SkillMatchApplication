@@ -1,5 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SkillMatchApplication.Models;
+using SkillMatchApplication.Services;
+using SkillMatchApplication.Windows;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,14 +17,10 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Windows.Media.Animation;
-using SkillMatchApplication.Windows;
-using SkillMatchApplication.Models;
-using System.Windows.Media.Effects;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 
 namespace SkillMatchApplication
 {
@@ -26,6 +29,8 @@ namespace SkillMatchApplication
     /// </summary>
     public partial class Dashboard : Window, INotifyPropertyChanged
     {
+        private readonly ApiClient apiClient = new ApiClient();
+
         private Stack<Grid> history = new Stack<Grid>();
         private bool isOpen = false;
         private readonly ObservableCollection<Message> currentMessages = new ObservableCollection<Message>();
@@ -47,15 +52,16 @@ namespace SkillMatchApplication
 
 
         //fake data for all matches
-        private readonly List<MatchCard> allMatchesList = new List<MatchCard>
-        {
-            new MatchCard { Name = "Jane Smith", Skill = "Python", Rating = 4.9 },
-            new MatchCard { Name = "Mike Johnson", Skill = "Java", Rating = 4.7 },
-            new MatchCard { Name = "John Doe", Skill = "React", Rating = 4.8 },
-            new MatchCard { Name = "Sarah Kim", Skill = "UI/UX", Rating = 5.0 },
-            new MatchCard { Name = "Alex Chen", Skill = "C#", Rating = 4.6 },
-            new MatchCard { Name = "Tom Lee", Skill = "JavaScript", Rating = 4.9 }
-        };
+        //private readonly List<MatchCard> allMatchesList = new List<MatchCard>
+        //{
+        //    new MatchCard { Name = "Jane Smith", Skill = "Python", Rating = 4.9 },
+        //    new MatchCard { Name = "Mike Johnson", Skill = "Java", Rating = 4.7 },
+        //    new MatchCard { Name = "John Doe", Skill = "React", Rating = 4.8 },
+        //    new MatchCard { Name = "Sarah Kim", Skill = "UI/UX", Rating = 5.0 },
+        //    new MatchCard { Name = "Alex Chen", Skill = "C#", Rating = 4.6 },
+        //    new MatchCard { Name = "Tom Lee", Skill = "JavaScript", Rating = 4.9 }
+        //};
+        private List<MatchCard> allMatchesList = new List<MatchCard>();
 
         private class Conversation
         {
@@ -77,55 +83,63 @@ namespace SkillMatchApplication
             // Load data
             DataContext = this;
             messagesPanel.ItemsSource = currentMessages;
-            lbAllMatches.ItemsSource = allMatchesList;
+            //lbAllMatches.ItemsSource = allMatchesList;
             SetActiveButton(btnDashboard); //Set Dashboard as active on load
             Show(dashboardContent);//Show dashboard content on load 
             new MessagesTestWindow().Show();//open test window (Can be removed later)
             IsConversationSelected = false; //no conversation selected at start
-            //FAKE DATA — SHOWS IMMEDIATELY IN RUNTIME
-            lbUpcomingSessions.ItemsSource = new List<SessionCard>
-            {
-                new SessionCard { Day = "05", Month = "Dec", Skill = "React Basics", PartnerName = "Jane Smith", Time = "2:00 PM", IsTeaching = true },
-                new SessionCard { Day = "08", Month = "Dec", Skill = "Python Fundamentals", PartnerName = "Mike Johnson", Time = "10:00 AM", IsTeaching = false },
-                new SessionCard { Day = "15", Month = "Dec", Skill = "C# Advanced", PartnerName = "Alex Chen", Time = "4:00 PM", IsTeaching = true },
-                new SessionCard { Day = "20", Month = "Dec", Skill = "UI/UX Design", PartnerName = "Sarah Kim", Time = "6:00 PM", IsTeaching = false }
-            };
 
-            // FAKE CONVERSATIONS — LOOKS REAL
-            lbConversations.ItemsSource = new List<Conversation>
-            {
-                new Conversation { Name = "Jane Smith", LastMessage = "See you on December for t...", Avatar = "/Resources/Avatars/jane.jpg" },
-                new Conversation { Name = "Mike Johnson", LastMessage = "Thanks for the React tutori...", Avatar = "/Resources/Avatars/mike.jpg" },
-                new Conversation { Name = "Alex Chen", LastMessage = "Are we still on for Friday?", Avatar = "/Resources/Avatars/alex.jpg" },
-                new Conversation { Name = "Sarah Kim", LastMessage = "Yes! 6 PM works", Avatar = "/Resources/Avatars/sarah.jpg" }
-            };
+            // Ensure ApiClient sends the saved JWT (if present)
+            if (!string.IsNullOrEmpty(Services.Session.JwtToken))
+                apiClient.SetJwt(Services.Session.JwtToken);
 
-            lbAllMatches.ItemsSource = allMatchesList;
 
-            lbPastSessions.ItemsSource = new List<SessionCard>
-            {
-                new SessionCard { Day = "28", Month = "Nov", Skill = "Java OOP", PartnerName = "Anna Lee", Time = "3:00 PM", IsTeaching = true },
-                new SessionCard { Day = "12", Month = "Nov", Skill = "Git Basics", PartnerName = "Tom Brown", Time = "11:00 AM", IsTeaching = false }
-            };
+            _ = RefreshUserInfoAsync();
 
-            //FAKE DATA — DELETE LATER WHEN DATABASE IS READY
-            lbRecommendedMatches.ItemsSource = new List<MatchCard>
-            {
-                new MatchCard { Name = "Jane Smith", Skill = "Python, CS, Fortnite, Siege, Minecraft,", Rating = 4.9 },
-                new MatchCard { Name = "Mike Johnson", Skill = "Java", Rating = 4.7 },
-                new MatchCard { Name = "John Doe", Skill = "React", Rating = 4.8 },
-                new MatchCard { Name = "Anna Smith", Skill = "C#", Rating = 5.0 },
-                new MatchCard { Name = "Tom Lee", Skill = "Design", Rating = 4.6 },
-                new MatchCard { Name = "Sara Connor", Skill = "Machine Learning", Rating = 4.9 },
-                new MatchCard { Name = "David Kim", Skill = "DevOps", Rating = 4.5 },
-                new MatchCard { Name = "Linda Park", Skill = "UI/UX", Rating = 4.8 },
-                new MatchCard { Name = "James Wilson", Skill = "Ruby on Rails", Rating = 4.7 },
-                new MatchCard { Name = "Emily Davis", Skill = "Data Science", Rating = 4.9 },
-                new MatchCard { Name = "Chris Brown", Skill = "Mobile Development", Rating = 4.6 },
-                new MatchCard { Name = "Olivia Garcia", Skill = "Cybersecurity", Rating = 4.8 },
-                new MatchCard { Name = "Daniel Martinez", Skill = "Cloud Computing", Rating = 4.7 },
-                new MatchCard { Name = "Sophia Hernandez", Skill = "Project Management", Rating = 4.9 },
-            };
+            ////FAKE DATA — SHOWS IMMEDIATELY IN RUNTIME
+            //lbUpcomingSessions.ItemsSource = new List<SessionCard>
+            //{
+            //    new SessionCard { Day = "05", Month = "Dec", Skill = "React Basics", PartnerName = "Jane Smith", Time = "2:00 PM", IsTeaching = true },
+            //    new SessionCard { Day = "08", Month = "Dec", Skill = "Python Fundamentals", PartnerName = "Mike Johnson", Time = "10:00 AM", IsTeaching = false },
+            //    new SessionCard { Day = "15", Month = "Dec", Skill = "C# Advanced", PartnerName = "Alex Chen", Time = "4:00 PM", IsTeaching = true },
+            //    new SessionCard { Day = "20", Month = "Dec", Skill = "UI/UX Design", PartnerName = "Sarah Kim", Time = "6:00 PM", IsTeaching = false }
+            //};
+
+            //// FAKE CONVERSATIONS — LOOKS REAL
+            //lbConversations.ItemsSource = new List<Conversation>
+            //{
+            //    new Conversation { Name = "Jane Smith", LastMessage = "See you on December for t...", Avatar = "/Resources/Avatars/jane.jpg" },
+            //    new Conversation { Name = "Mike Johnson", LastMessage = "Thanks for the React tutori...", Avatar = "/Resources/Avatars/mike.jpg" },
+            //    new Conversation { Name = "Alex Chen", LastMessage = "Are we still on for Friday?", Avatar = "/Resources/Avatars/alex.jpg" },
+            //    new Conversation { Name = "Sarah Kim", LastMessage = "Yes! 6 PM works", Avatar = "/Resources/Avatars/sarah.jpg" }
+            //};
+
+            //lbAllMatches.ItemsSource = allMatchesList;
+
+            //lbPastSessions.ItemsSource = new List<SessionCard>
+            //{
+            //    new SessionCard { Day = "28", Month = "Nov", Skill = "Java OOP", PartnerName = "Anna Lee", Time = "3:00 PM", IsTeaching = true },
+            //    new SessionCard { Day = "12", Month = "Nov", Skill = "Git Basics", PartnerName = "Tom Brown", Time = "11:00 AM", IsTeaching = false }
+            //};
+
+            ////FAKE DATA — DELETE LATER WHEN DATABASE IS READY
+            //lbRecommendedMatches.ItemsSource = new List<MatchCard>
+            //{
+            //    new MatchCard { Name = "Jane Smith", Skill = "Python, CS, Fortnite, Siege, Minecraft,", Rating = 4.9 },
+            //    new MatchCard { Name = "Mike Johnson", Skill = "Java", Rating = 4.7 },
+            //    new MatchCard { Name = "John Doe", Skill = "React", Rating = 4.8 },
+            //    new MatchCard { Name = "Anna Smith", Skill = "C#", Rating = 5.0 },
+            //    new MatchCard { Name = "Tom Lee", Skill = "Design", Rating = 4.6 },
+            //    new MatchCard { Name = "Sara Connor", Skill = "Machine Learning", Rating = 4.9 },
+            //    new MatchCard { Name = "David Kim", Skill = "DevOps", Rating = 4.5 },
+            //    new MatchCard { Name = "Linda Park", Skill = "UI/UX", Rating = 4.8 },
+            //    new MatchCard { Name = "James Wilson", Skill = "Ruby on Rails", Rating = 4.7 },
+            //    new MatchCard { Name = "Emily Davis", Skill = "Data Science", Rating = 4.9 },
+            //    new MatchCard { Name = "Chris Brown", Skill = "Mobile Development", Rating = 4.6 },
+            //    new MatchCard { Name = "Olivia Garcia", Skill = "Cybersecurity", Rating = 4.8 },
+            //    new MatchCard { Name = "Daniel Martinez", Skill = "Cloud Computing", Rating = 4.7 },
+            //    new MatchCard { Name = "Sophia Hernandez", Skill = "Project Management", Rating = 4.9 },
+            //};
         }
 
         public void AddMessage(string text, bool isSent)
@@ -145,6 +159,8 @@ namespace SkillMatchApplication
 
             if (history.Count == 0 || history.Peek() != page)
                 history.Push(page);
+
+            _ = RefreshUserInfoAsync();
         }
 
         // Static helper for dashboard navigation
@@ -227,6 +243,19 @@ namespace SkillMatchApplication
             if (result == MessageBoxResult.Yes)
             {
                 CloseSidebar();
+
+                // Clear session data and JWT
+                try
+                {
+                    apiClient.ClearJwt();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("Error clearing JWT: " + ex.Message);
+                }
+
+                Session.JwtToken = null;
+                Session.User = null;
 
                 //Go back to Login window
                 var login = new MainWindow(); 
@@ -404,108 +433,205 @@ namespace SkillMatchApplication
             messageScroll.ScrollToEnd();
         }
 
-
-        /* No longer needed
-
-          //Scroll the chat to the bottom
-         public void ScrollChatToBottom()
-         {
-             if (messageContainer != null)
-             {
-                 messageContainer.Dispatcher.BeginInvoke(
-                     System.Windows.Threading.DispatcherPriority.Background,
-                     new Action(() => messageContainer.ScrollToEnd())
-                 );
-             }
-         }
-
-          private void SetupChatInput()
+        // Fetch user info and update UI using Newtonsoft.Json
+        private async Task RefreshUserInfoAsync()
         {
-            txtMessage.KeyDown += (sender, e) =>
+            try
             {
-                if (e.Key == Key.Enter)
+                // If we have a JWT, ensure ApiClient uses it
+                if (!string.IsNullOrEmpty(Session.JwtToken))
+                    apiClient.SetJwt(Session.JwtToken);
+
+                // Fetch profile JSON from API endpoint
+                var json = await apiClient.GetJson("/profile");
+                System.Diagnostics.Debug.WriteLine("RAW JSON: " + json);
+
+                // Handle empty response
+                if (string.IsNullOrWhiteSpace(json)) return;
+
+                // Parse JSON using JObject for flexible structure
+                JObject root;
+                try
                 {
-                    if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
-                    {
-                        //Shift + Enter = allow new line (do nothing special)
-                        //WPF will automatically insert a new line because AcceptsReturn="True"
-                    }
-                    else
-                    {
-                        //Just Enter = SEND
-                        e.Handled = true;                   // ← Stops the newline from appearing
-                        SendMessageFromDashboard();
-                    }
+                    root = JObject.Parse(json);
                 }
-            };
+                catch (JsonReaderException)
+                {
+                    System.Diagnostics.Debug.WriteLine("RefreshUserInfoAsync: invalid JSON");
+                    return;
+                }
 
-            //Button also sends
-            btnSendMessage.Click += (s, e) => SendMessageFromDashboard();
-        }
+                // Locate candidate token: prefer user.dataValues -> user -> dataValues -> root
+                JToken candidate = null;
+                if (root["user"] != null)
+                {
+                    // root.user may be object; if it has dataValues, prefer that
+                    var userToken = root["user"];
+                    if (userToken["dataValues"] != null && userToken["dataValues"].HasValues)
+                        candidate = userToken["dataValues"];
+                    else if (userToken.HasValues)
+                        candidate = userToken;
+                }
 
-        
-        //Handle Enter key in txtMessage
-        private void txtMessage_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter && Keyboard.Modifiers != ModifierKeys.Shift)
+                if (candidate == null)
+                {
+                    if (root["dataValues"] != null && root["dataValues"].HasValues)
+                        candidate = root["dataValues"];
+                    else
+                        candidate = root;
+                }
+
+                if (candidate == null || !candidate.HasValues) return;
+
+                var userData = new SimpleUser
+                {
+                    UserId = (string)(candidate["user_id"] ?? candidate["userId"] ?? candidate["id"]),
+                    Email = (string)(candidate["email"] ?? candidate["Email"]),
+                    Name = (string)(candidate["name"] ?? candidate["Name"]),
+                    Role = (string)(candidate["role"] ?? candidate["Role"]),
+                    Bio = (string)(candidate["bio"] ?? candidate["Bio"]),
+                    ProfilePicture = (string)(candidate["profile_picture"] ?? candidate["profilePicture"]),
+                    Rating = (string)(candidate["rating"] ?? candidate["Rating"])
+                };
+
+                // total_sessions might be numeric or string; parse defensively
+                var totalToken = candidate["total_sessions"] ?? candidate["totalSessions"];
+                if (totalToken != null && totalToken.Type != JTokenType.Null)
+                {
+                    int parsed;
+                    if (int.TryParse(totalToken.ToString(), out parsed))
+                        userData.TotalSessions = parsed;
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    System.Diagnostics.Debug.WriteLine("Parsed user: " + JsonConvert.SerializeObject(userData));
+                    tbWelcomeUser.Text = $"Welcome, {userData.Name ?? userData.Email ?? "User"}";
+                    if (!string.IsNullOrEmpty(userData.Name)) tbSidebarName.Text = userData.Name;
+                    if (!string.IsNullOrEmpty(userData.Email)) tbSidebarEmail.Text = userData.Email;
+
+                    if (userData.TotalSessions.HasValue)
+                        tbTotalSessions.Text = userData.TotalSessions.Value.ToString();
+
+                    if (!string.IsNullOrEmpty(userData.Rating) && double.TryParse(userData.Rating, out double parsedRating))
+                        tbRatings.Text = parsedRating.ToString("F1");
+                });
+
+                // Await the asynchronous GetRecommendedMatches result
+                var matches = await GetRecommendedMatches();
+
+                // Assign to ItemsSource on the UI thread
+                Dispatcher.Invoke(() => lbRecommendedMatches.ItemsSource = matches);
+
+                // Also refresh all matches list
+                var allMatches = await GetRecommendedMatches();
+                Dispatcher.Invoke(() => lbAllMatches.ItemsSource = allMatches);
+            }
+            catch (Exception ex)
             {
-                e.Handled = true;
-                btnSendMessage.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                System.Diagnostics.Debug.WriteLine("RefreshUserInfoAsync failed: " + ex.Message);
             }
         }
 
-
-         //Add a message bubble to the chat
-         public void AddMessageToChat(string text, bool isFromMe)
-         {
-             var bubble = new Border
-             {
-                 Background = isFromMe ? new SolidColorBrush(Color.FromRgb(143, 171, 212)) : Brushes.LightGray,
-                 CornerRadius = new CornerRadius(20),
-                 Padding = new Thickness(16, 12, 16, 12),
-                 MaxWidth = 600,
-                 HorizontalAlignment = isFromMe ? HorizontalAlignment.Right : HorizontalAlignment.Left,
-                 Margin = new Thickness(15, 8, 15, 8),
-                 Child = new TextBlock
-                 {
-                     Text = text,
-                     Foreground = isFromMe ? Brushes.White : Brushes.Black,
-                     TextWrapping = TextWrapping.Wrap,
-                     FontSize = 15
-                 }
-             };
-
-             messagesStackPanel.Children.Add(bubble);
-             ScrollChatToBottom();//always scrolls, no matter who sent it
-         }
-               private void SendMessageFromDashboard()
+        private async Task<List<MatchCard>> GetRecommendedMatches()
         {
-            if (string.IsNullOrWhiteSpace(txtMessage.Text)) return;
+            // Ensure ApiClient uses saved JWT if present
+            if (!string.IsNullOrEmpty(Session.JwtToken))
+                apiClient.SetJwt(Session.JwtToken);
 
-            string text = txtMessage.Text;
-            txtMessage.Clear();
+            var json = await apiClient.GetJson("/api/matches");
+            System.Diagnostics.Debug.WriteLine("RAW JSON: " + json);
 
-            AddMessageToChat(text, true);//true = from me (right side)
+            if (string.IsNullOrWhiteSpace(json))
+                return new List<MatchCard>();
+
+            try
+            {
+                var matches = new List<MatchCard>();
+
+                // Use JToken.Parse so we can handle either an array or an object containing an array
+                var rootToken = JToken.Parse(json);
+                JArray arr = null;
+
+                if (rootToken.Type == JTokenType.Array)
+                {
+                    arr = (JArray)rootToken;
+                }
+                else if (rootToken.Type == JTokenType.Object)
+                {
+                    var rootObj = (JObject)rootToken;
+                    // Common property name in your logs is "matches"
+                    var mToken = rootObj["matches"] ?? rootObj["data"] ?? rootObj["results"];
+
+                    if (mToken != null && mToken.Type == JTokenType.Array)
+                        arr = (JArray)mToken;
+                    else if (mToken != null && mToken.Type == JTokenType.Object)
+                        arr = new JArray(mToken); // single object -> treat as one-element array
+                    else
+                        return new List<MatchCard>(); // no array available
+                }
+
+                if (arr == null)
+                    return new List<MatchCard>();
+
+                foreach (var item in arr)
+                {
+                    // Skills -> produce a comma-separated string
+                    string skillsString = string.Empty;
+                    var skillsToken = item["skillsOffered"] ?? item["skills"];
+
+                    if (skillsToken != null && skillsToken.Type != JTokenType.Null)
+                    {
+                        if (skillsToken.Type == JTokenType.Array)
+                        {
+                            // Map each element to trimmed string and join
+                            var parts = skillsToken
+                                .Children()
+                                .Select(t => t.ToString().Trim())
+                                .Where(s => !string.IsNullOrEmpty(s));
+
+                            skillsString = string.Join(", ", parts);
+                        }
+                        else
+                        {
+                            // Single value (string/number) -> use ToString()
+                            skillsString = skillsToken.ToString().Trim();
+                        }
+                    }
+
+                    matches.Add(new MatchCard
+                    {
+                        Name = (string)(item["name"] ?? item["Name"]),
+                        Skill = skillsString,
+                        Rating = item["rating"] != null ? Convert.ToDouble(item["rating"]) : 0.0
+                    });
+                }
+
+                return matches;
+            }
+            catch (JsonReaderException jex)
+            {
+                System.Diagnostics.Debug.WriteLine("GetRecommendedMatches JSON parse failed: " + jex.Message);
+                return new List<MatchCard>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("GetRecommendedMatches failed: " + ex.Message);
+                return new List<MatchCard>();
+            }
         }
-        */
+
+        // Minimal user DTO used locally
+        private class SimpleUser
+        {
+            public string UserId { get; set; }
+            public string Email { get; set; }
+            public string Name { get; set; }
+            public string Role { get; set; }
+            public string Bio { get; set; }
+            public string ProfilePicture { get; set; }
+            public string Rating { get; set; }
+            public int? TotalSessions { get; set; }
+        }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

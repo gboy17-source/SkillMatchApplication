@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using SkillMatchApplication.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,12 +55,52 @@ namespace SkillMatchApplication
         }
 
         //Login Button from LoginContent
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-            Dashboard dashboard = new Dashboard();
-            dashboard.Show();
-            this.Close();
+            //MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            //Dashboard dashboard = new Dashboard();
+            //dashboard.Show();
+            //this.Close();
+
+            string email = txtLoginEmail.Text;
+            string password = txtLoginPassword.Password;
+
+            try
+            {
+                // Call our api client
+                var api = new ApiClient();
+
+                // Request for login
+                var loginData = new Models.AuthModels.LoginRequest()
+                {
+                    email = email,
+                    password = password,
+                };
+
+                string json = JsonConvert.SerializeObject(loginData);
+
+                string responseJson = await api.PostJson("/login", json);
+
+                var response = JsonConvert.DeserializeObject<Models.AuthModels.LoginResponse>(responseJson);
+
+                // Save the raw token
+                Session.JwtToken = response.token;
+
+                // Decode it for easy access
+                Session.User = JwtService.Decode(response.token);
+
+                api.SetJwt(Session.JwtToken);
+
+                MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                Dashboard dashboard = new Dashboard();
+                dashboard.Show();
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Login failed: " + ex.Message, "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         /// <summary>
@@ -122,11 +164,36 @@ namespace SkillMatchApplication
         }
 
         //Register button from RegisterContent
-        private void btnRegister_Click(object sender, RoutedEventArgs e)
+        private async void btnRegister_Click(object sender, RoutedEventArgs e)
         {
+            //MessageBox.Show("Registration successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            //Show(LoginContent); //Back to login content after successfully registering
 
-            MessageBox.Show("Registration successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-            Show(LoginContent); //Back to login content after successfully registering
+            string email = txtRegisterEmail.Text;
+            string password = txtRegisterPassword.Password;
+
+            try
+            {
+                var api = new ApiClient();
+
+                var registerData = new Models.AuthModels.RegisterRequest()
+                {
+                    email = email,
+                    password = password,
+                };
+
+                string json = JsonConvert.SerializeObject(registerData);
+
+                string responseJson = await api.PostJson("/register", json);
+
+                var response = JsonConvert.DeserializeObject<Models.AuthModels.RegisterResponse>(responseJson);
+
+                MessageBox.Show("Registration successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Registration failed: " + ex.Message, "Registration Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
         ///</summary>
     }
