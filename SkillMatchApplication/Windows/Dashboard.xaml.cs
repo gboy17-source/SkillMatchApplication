@@ -745,6 +745,7 @@ namespace SkillMatchApplication
 
                     sessions.Add(new SessionCard
                     {
+                        SessionId = (string)(item["session_id"] ?? item["sessionId"] ?? item["id"] ?? item["Id"]),
                         Day = parsedDt.ToString("dd"),
                         Month = parsedDt.ToString("MMM"),
                         Skill = skill,
@@ -883,6 +884,64 @@ namespace SkillMatchApplication
             public string ProfilePicture { get; set; }
             public string Rating { get; set; }
             public int? TotalSessions { get; set; }
+        }
+
+        private async void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            // Ensure JWT is used
+            if (!string.IsNullOrEmpty(Session.JwtToken))
+                apiClient.SetJwt(Session.JwtToken);
+
+            // Use the session object directly from the button DataContext
+            var button = sender as Button;
+            if (button == null)
+            {
+                MessageBox.Show("Unable to determine the session to cancel.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var session = button.DataContext as SessionCard;
+            if (session == null)
+            {
+                MessageBox.Show("Session data unavailable for this item.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(session.SessionId))
+            {
+                MessageBox.Show("This session does not contain an ID. Cannot cancel.", "Missing ID", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var confirm = MessageBox.Show($"Are you sure you want to cancel session {session.SessionId}?", "Cancel Session", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (confirm != MessageBoxResult.Yes) return;
+
+            try
+            {
+                var endpoint = $"/api/sessions/{session.SessionId}/cancel";
+                // Call PUT /sessions/{id}/cancel (no body)
+                await apiClient.PutJson(endpoint, null);
+
+                MessageBox.Show("Session cancelled successfully.", "Cancelled", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Refresh upcoming sessions list
+                var sessions = await GetUpcomingSessions();
+                Dispatcher.Invoke(() => lbUpcomingSessions.ItemsSource = sessions);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to cancel session: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnReschedule_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnAccept_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

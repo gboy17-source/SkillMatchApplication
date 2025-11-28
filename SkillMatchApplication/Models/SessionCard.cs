@@ -8,6 +8,7 @@ namespace SkillMatchApplication.Models
 {
     public class SessionCard
     {
+        public string SessionId { get; set; }
         public string Day { get; set; }
         public string Month { get; set; }
         public string Skill { get; set; }

@@ -78,9 +78,9 @@
 
                     <!-- Buttons - right aligned -->
                     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Content="Accept" Background="Green" Foreground="White" Padding="15,8" Margin="5"/>
-                        <Button Content="Reschedule" Background="Orange" Foreground="White" Padding="15,8" Margin="5"/>
-                        <Button Content="Cancel" Background="Red" Foreground="White" Padding="15,8" Margin="5"/>
+                        <Button x:Name="btnAccept" Content="Accept" Background="Green" Foreground="White" Padding="15,8" Margin="5" Click="btnAccept_Click"/>
+                        <Button x:Name="btnReschedule" Content="Reschedule" Background="Orange" Foreground="White" Padding="15,8" Margin="5" Click="btnReschedule_Click"/>
+                        <Button x:Name="btnCancel" Content="Cancel" Background="Red" Foreground="White" Padding="15,8" Margin="5" Click="btnCancel_Click"/>
                     </StackPanel>
                 </Grid>
             </Border>
