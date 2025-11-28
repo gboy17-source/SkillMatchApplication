@@ -9,16 +9,20 @@
         Title="Dashboard" Height="1020" Width="1600" Icon="/Resources/Logos/Logo.png" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-<local:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+        <local:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
         <!-- Data Template for Session Cards -->
         <DataTemplate x:Key="SessionCardTemplate">
-            <Border Background="White" BorderBrush="LightGray" BorderThickness="1" Padding="20" Margin="0,0,0,20">
+            <Border Background="White" BorderBrush="LightGray" BorderThickness="1" CornerRadius="16" Padding="25" Margin="0,0,0,20">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
+                        <!-- Date -->
                         <ColumnDefinition Width="*"/>
+                        <!-- Middle - stretches -->
                         <ColumnDefinition Width="Auto"/>
+                        <!-- Buttons -->
                     </Grid.ColumnDefinitions>
+
                     <!-- Date -->
                     <Border Background="#6366F1" Width="80" Height="80" CornerRadius="16">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -27,21 +31,56 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Text -->
-                    <StackPanel Grid.Column="1" Margin="20,0">
-                        <TextBlock Text="{Binding Skill}" FontSize="22" FontWeight="Bold"/>
-                        <TextBlock FontSize="16" Margin="0,5">
-                            <Run Text="{Binding PartnerName}"/>
-                            <Run Text=" (TEACH)" Foreground="Green" FontWeight="Bold"/>
-                            <Run Text=" (LEARN)" Foreground="Blue" FontWeight="Bold"/>          
-                        </TextBlock>
-                    </StackPanel>
+                    <!-- Middle Section - Stretches full width -->
+                    <Grid Grid.Column="1" Margin="25,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <!-- Skill + Partner -->
+                            <ColumnDefinition Width="Auto"/>
+                            <!-- Time -->
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Buttons -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0">
-                        <Button Content="Accept" Background="Green" Foreground="White" Margin="5"/>
-                        <Button Content="Reschedule" Background="Orange" Foreground="White" Margin="5"/>
-                        <Button Content="Cancel" Background="Red" Foreground="White" Margin="5"/>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="{Binding Skill}" FontSize="22" FontWeight="Bold"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock Text="{Binding PartnerName}" FontSize="16"/>
+                                <TextBlock Text=" (TEACH)" Foreground="Green" FontWeight="Bold" Margin="5,0,0,0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsTeaching}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text=" (LEARN)" Foreground="Blue" FontWeight="Bold">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsTeaching}" Value="False">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Time aligned to right -->
+                        <TextBlock Grid.Column="1" Text="{Binding Time}" FontSize="16" Foreground="Gray" 
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- Buttons - right aligned -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="Accept" Background="Green" Foreground="White" Padding="15,8" Margin="5"/>
+                        <Button Content="Reschedule" Background="Orange" Foreground="White" Padding="15,8" Margin="5"/>
+                        <Button Content="Cancel" Background="Red" Foreground="White" Padding="15,8" Margin="5"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -129,10 +168,8 @@
                     </Grid>
                 </DockPanel>
             </Border>
- 
-            
             <!-- New Messenger Grid -->
-            <Grid x:Name="MessengerGrid" Background="#F0F2F5" Margin="105,102,105,32">
+            <Grid x:Name="MessengerGrid" Background="#F0F2F5" Margin="105,102,105,32" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="350"/>
                     <ColumnDefinition Width="*"/>
@@ -256,7 +293,6 @@
                     </StackPanel>
                 </Grid>
             </Grid>
-
             <!-- Dashboard Content Grid -->
             <Grid x:Name="dashboardContent" Margin="80,119,80,46" Background="#33C6E4EE" Visibility="Collapsed">
                 <Grid Margin="0,0,0,685">

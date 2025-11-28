@@ -128,11 +128,10 @@ namespace SkillMatchApplication
             };
         }
 
-        public void AddMessage(string text, bool isSent)
-        {
-            currentMessages.Add(new Message { Text = text, IsSent = isSent });
-            messageScroll.ScrollToEnd();
-        }
+
+        
+
+
         //Show the specified page and hide others
         public void Show(Grid page)
         {
@@ -347,6 +346,14 @@ namespace SkillMatchApplication
         }
 
 
+        //Messenger 
+        public void AddMessage(string text, bool isSent)
+        {
+            currentMessages.Add(new Message { Text = text, IsSent = isSent });
+            messageScroll.ScrollToEnd();
+        }
+
+
         //Messenger
         private void lbConversations_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -367,10 +374,13 @@ namespace SkillMatchApplication
             }
         }
 
+        // Send button click handler Messnger
         private void btnSend_Click(object sender, RoutedEventArgs e)
         {
             SendMessage();
         }
+
+        // Handle Enter key in txtMessage
 
         private void txtMessage_KeyDown(object sender, KeyEventArgs e)
         {
@@ -390,6 +400,8 @@ namespace SkillMatchApplication
             };
         }
 
+        // Send the message
+
         private void SendMessage()
         {
             if (string.IsNullOrWhiteSpace(txtMessage.Text)) return;
@@ -403,91 +415,6 @@ namespace SkillMatchApplication
             txtMessage.Clear();
             messageScroll.ScrollToEnd();
         }
-
-
-        /* No longer needed
-
-          //Scroll the chat to the bottom
-         public void ScrollChatToBottom()
-         {
-             if (messageContainer != null)
-             {
-                 messageContainer.Dispatcher.BeginInvoke(
-                     System.Windows.Threading.DispatcherPriority.Background,
-                     new Action(() => messageContainer.ScrollToEnd())
-                 );
-             }
-         }
-
-          private void SetupChatInput()
-        {
-            txtMessage.KeyDown += (sender, e) =>
-            {
-                if (e.Key == Key.Enter)
-                {
-                    if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
-                    {
-                        //Shift + Enter = allow new line (do nothing special)
-                        //WPF will automatically insert a new line because AcceptsReturn="True"
-                    }
-                    else
-                    {
-                        //Just Enter = SEND
-                        e.Handled = true;                   // ← Stops the newline from appearing
-                        SendMessageFromDashboard();
-                    }
-                }
-            };
-
-            //Button also sends
-            btnSendMessage.Click += (s, e) => SendMessageFromDashboard();
-        }
-
-        
-        //Handle Enter key in txtMessage
-        private void txtMessage_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter && Keyboard.Modifiers != ModifierKeys.Shift)
-            {
-                e.Handled = true;
-                btnSendMessage.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            }
-        }
-
-
-         //Add a message bubble to the chat
-         public void AddMessageToChat(string text, bool isFromMe)
-         {
-             var bubble = new Border
-             {
-                 Background = isFromMe ? new SolidColorBrush(Color.FromRgb(143, 171, 212)) : Brushes.LightGray,
-                 CornerRadius = new CornerRadius(20),
-                 Padding = new Thickness(16, 12, 16, 12),
-                 MaxWidth = 600,
-                 HorizontalAlignment = isFromMe ? HorizontalAlignment.Right : HorizontalAlignment.Left,
-                 Margin = new Thickness(15, 8, 15, 8),
-                 Child = new TextBlock
-                 {
-                     Text = text,
-                     Foreground = isFromMe ? Brushes.White : Brushes.Black,
-                     TextWrapping = TextWrapping.Wrap,
-                     FontSize = 15
-                 }
-             };
-
-             messagesStackPanel.Children.Add(bubble);
-             ScrollChatToBottom();//always scrolls, no matter who sent it
-         }
-               private void SendMessageFromDashboard()
-        {
-            if (string.IsNullOrWhiteSpace(txtMessage.Text)) return;
-
-            string text = txtMessage.Text;
-            txtMessage.Clear();
-
-            AddMessageToChat(text, true);//true = from me (right side)
-        }
-        */
     }
 }
 
