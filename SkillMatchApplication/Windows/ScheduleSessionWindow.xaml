@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="ScheduleSessionWindow" Height="264" Width="363" Background="#FFEFECE3" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
     <Grid>
-        <DatePicker HorizontalAlignment="Center" Margin="0,52,0,0" VerticalAlignment="Top" Height="34" FontSize="18" SelectedDateFormat="Short"/>
-        <ComboBox HorizontalAlignment="Center" Margin="0,131,0,0" VerticalAlignment="Top" Width="120" IsEditable="True">
+        <DatePicker x:Name="datePicker" HorizontalAlignment="Left" Margin="46,124,0,0" VerticalAlignment="Top" Height="34" FontSize="18" SelectedDateFormat="Short"/>
+        <ComboBox x:Name="timeCombo" HorizontalAlignment="Left" Margin="212,136,0,0" VerticalAlignment="Top" Width="120" IsEditable="True">
             <ComboBoxItem Content="12:00 AM"/>
             <ComboBoxItem Content="1:00 AM"/>
             <ComboBoxItem Content="2:00 AM"/>
@@ -35,8 +35,10 @@
             <ComboBoxItem Content="11:00 PM"/>
             <ComboBoxItem Content="12:00 PM"/>
         </ComboBox>
-        <TextBlock HorizontalAlignment="Center" Margin="0,110,0,0" TextWrapping="Wrap" Text="PICK TIME" VerticalAlignment="Top"/>
-        <Button x:Name="btnRequestSession" Content="Request Session" HorizontalAlignment="Center" Margin="0,170,0,0" VerticalAlignment="Top" Width="134" Height="42" Background="#FF183765" Foreground="#FFEFECE3" FontWeight="Bold" FontFamily="Yu Gothic UI"/>
+        <TextBlock HorizontalAlignment="Left" Margin="212,0,0,0" TextWrapping="Wrap" Text="PICK TIME" VerticalAlignment="Center"/>
+        <Button x:Name="btnRequestSession" Content="Request Session" HorizontalAlignment="Center" Margin="0,170,0,0" VerticalAlignment="Top" Width="134" Height="42" Background="#FF183765" Foreground="#FFEFECE3" FontWeight="Bold" FontFamily="Yu Gothic UI" Click="btnRequestSession_Click"/>
+        <TextBlock HorizontalAlignment="Left" Margin="46,26,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="PICK SKILL TO LEARN"/>
+        <ComboBox x:Name="skillCombo" HorizontalAlignment="Left" Margin="46,47,0,0" VerticalAlignment="Top" Width="286" IsEditable="True"/>
 
     </Grid>
 </Window>

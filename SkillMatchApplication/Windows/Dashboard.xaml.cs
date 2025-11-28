@@ -328,9 +328,38 @@ namespace SkillMatchApplication
         {
             if (lbRecommendedMatches.SelectedItem is MatchCard selected)
             {
-                var schedule = new ScheduleSessionWindow();
-                schedule.Owner = this;                                   // centers it
-                schedule.Title = $"Schedule Session with {selected.Name}";
+                var schedule = new ScheduleSessionWindow
+                {
+                    Owner = this,                                   // centers it
+                    Title = $"Schedule Session with {selected.Name}"
+                };
+
+                // Pass the tutor id string directly (GUID or string id)
+                if (!string.IsNullOrWhiteSpace(selected.MatchedUserId))
+                    schedule.TutorId = selected.MatchedUserId;
+                else if (!string.IsNullOrWhiteSpace(selected.CurrentUserId))
+                    schedule.TutorId = selected.CurrentUserId;
+
+                // Populate skill options from the parsed SkillsOffered list (preferred)
+                if (selected.SkillsOffered != null && selected.SkillsOffered.Any())
+                {
+                    schedule.SkillOptions = selected.SkillsOffered;
+                    if (selected.SkillIds != null && selected.SkillIds.Any())
+                        schedule.SkillOptionIds = selected.SkillIds;
+                }
+                else if (!string.IsNullOrWhiteSpace(selected.Skill))
+                {
+                    // fallback to the legacy comma-separated Skill string
+                    var skills = selected.Skill
+                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => s.Trim())
+                        .Where(s => !string.IsNullOrEmpty(s))
+                        .ToList();
+
+                    if (skills.Any())
+                        schedule.SkillOptions = skills;
+                }
+
                 schedule.ShowDialog();                                   // modal window
 
                 lbRecommendedMatches.SelectedItem = null;                // allow re-click
@@ -366,14 +395,39 @@ namespace SkillMatchApplication
         {
             if (lbAllMatches.SelectedItem is MatchCard selected)
             {
-                var schedule = new ScheduleSessionWindow();
-                schedule.Owner = this;
-                schedule.Title = $"Schedule Session with {selected.Name}";
+                var schedule = new ScheduleSessionWindow
+                {
+                    Owner = this,
+                    Title = $"Schedule Session with {selected.Name}"
+                };
+
+                if (!string.IsNullOrWhiteSpace(selected.MatchedUserId))
+                    schedule.TutorId = selected.MatchedUserId;
+                else if (!string.IsNullOrWhiteSpace(selected.CurrentUserId))
+                    schedule.TutorId = selected.CurrentUserId;
+
+                if (selected.SkillsOffered != null && selected.SkillsOffered.Any())
+                {
+                    schedule.SkillOptions = selected.SkillsOffered;
+                    if (selected.SkillIds != null && selected.SkillIds.Any())
+                        schedule.SkillOptionIds = selected.SkillIds;
+                }
+                else if (!string.IsNullOrWhiteSpace(selected.Skill))
+                {
+                    var skills = selected.Skill
+                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(s => s.Trim())
+                        .Where(s => !string.IsNullOrEmpty(s))
+                        .ToList();
+
+                    if (skills.Any())
+                        schedule.SkillOptions = skills;
+                }
+
                 schedule.ShowDialog();
                 lbAllMatches.SelectedItem = null; //allows clicking same person again
             }
         }
-
 
         //Messenger 
         public void AddMessage(string text, bool isSent)
@@ -538,10 +592,179 @@ namespace SkillMatchApplication
                 // Also refresh all matches list
                 var allMatches = await GetRecommendedMatches();
                 Dispatcher.Invoke(() => lbAllMatches.ItemsSource = allMatches);
+
+                // Refresh session list
+                var Sessions = await GetUpcomingSessions();
+                Dispatcher.Invoke(() => lbUpcomingSessions.ItemsSource = Sessions);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("RefreshUserInfoAsync failed: " + ex.Message);
+            }
+        }
+
+        private async Task<List<SessionCard>> GetUpcomingSessions()
+        {
+            // Ensure ApiClient uses saved JWT if present
+            if (!string.IsNullOrEmpty(Session.JwtToken))
+                apiClient.SetJwt(Session.JwtToken);
+
+            var json = await apiClient.GetJson("/api/sessions");
+            System.Diagnostics.Debug.WriteLine("RAW SESSION JSON: " + json);
+
+            if (string.IsNullOrWhiteSpace(json)) return new List<SessionCard>();
+
+            try
+            {
+                var sessions = new List<SessionCard>();
+
+                var rootToken = JToken.Parse(json);
+                JArray arr = null;
+
+                if (rootToken.Type == JTokenType.Array)
+                {
+                    arr = (JArray)rootToken;
+                }
+                else if (rootToken.Type == JTokenType.Object)
+                {
+                    var rootObj = (JObject)rootToken;
+                    // Look for the sessions array explicitly (per provided example)
+                    var mToken = rootObj["sessions"] ?? rootObj["data"] ?? rootObj["results"];
+
+                    if (mToken != null && mToken.Type == JTokenType.Array)
+                        arr = (JArray)mToken;
+                    else if (mToken != null && mToken.Type == JTokenType.Object)
+                        arr = new JArray(mToken); // single object -> treat as one-element array
+                }
+
+                if (arr == null)
+                    return new List<SessionCard>();
+
+                string myId = Session.User?.Id;
+
+                foreach (var item in arr)
+                {
+                    // Fields expected per provided JSON example:
+                    var tutorId = (string)(item["tutor_id"] ?? item["tutorId"]);
+                    var learnerId = (string)(item["learner_id"] ?? item["learnerId"]);
+                    var dateStr = (string)(item["date"]);
+                    var timeStr = (string)(item["time"]); // expected "HH:mm:ss"
+                    var skillIdToken = item["skill_id"] ?? item["skillId"];
+                    int? skillId = null;
+                    if (skillIdToken != null && skillIdToken.Type != JTokenType.Null)
+                    {
+                        int parsedSkill;
+                        if (int.TryParse(skillIdToken.ToString(), out parsedSkill))
+                            skillId = parsedSkill;
+                    }
+
+                    // Nested tutor/learner objects
+                    var tutorObj = item["tutor"];
+                    var learnerObj = item["learner"];
+
+                    string tutorName = tutorObj?["name"]?.ToString();
+                    string tutorEmail = tutorObj?["email"]?.ToString();
+                    string tutorDisplay = (string)(item["tutor_display"] ?? item["tutorDisplay"]);
+
+                    string learnerName = learnerObj?["name"]?.ToString();
+                    string learnerEmail = learnerObj?["email"]?.ToString();
+                    string learnerDisplay = (string)(item["learner_display"] ?? item["learnerDisplay"]);
+
+                    // Skill may be an object with skill_name
+                    string skill = null;
+                    var skillToken = item["skill"];
+                    if (skillToken != null)
+                    {
+                        if (skillToken.Type == JTokenType.Object)
+                        {
+                            skill = (string)(skillToken["skill_name"] ?? skillToken["skillName"] ?? skillToken["name"]);
+                        }
+                        else
+                        {
+                            skill = skillToken.ToString().Trim();
+                        }
+                    }
+
+                    // Also check top-level fields
+                    if (string.IsNullOrWhiteSpace(skill))
+                        skill = (string)(item["skill_name"] ?? item["skillName"] ?? item["title"] ?? item["topic"]);
+
+                    if (string.IsNullOrWhiteSpace(skill) && skillId.HasValue)
+                        skill = $"Skill #{skillId.Value}";
+
+                    if (string.IsNullOrWhiteSpace(skill))
+                        skill = "Session";
+
+                    // Parse date + time into DateTime
+                    DateTime parsedDt;
+                    bool parsed = false;
+                    if (!string.IsNullOrWhiteSpace(dateStr) && !string.IsNullOrWhiteSpace(timeStr))
+                    {
+                        // date e.g. "2025-12-05", time e.g. "14:00:00"
+                        parsed = DateTime.TryParse(dateStr + " " + timeStr, out parsedDt);
+                    }
+                    else if (!string.IsNullOrWhiteSpace(dateStr))
+                    {
+                        parsed = DateTime.TryParse(dateStr, out parsedDt);
+                    }
+                    else
+                    {
+                        parsed = DateTime.TryParse(item.ToString(), out parsedDt);
+                    }
+
+                    if (!parsed)
+                        parsedDt = DateTime.Now;
+
+                    // Decide whether current user is the tutor
+                    bool isTeaching = false;
+                    if (!string.IsNullOrWhiteSpace(myId) && !string.IsNullOrWhiteSpace(tutorId))
+                        isTeaching = string.Equals(myId, tutorId, StringComparison.OrdinalIgnoreCase);
+
+                    // Determine partner name (use tutor name/preferred values).
+                    // User requested partnerName to be tutor's name (not the tutor id).
+                    string partnerName;
+
+                    if (isTeaching)
+                    {
+                        // I'm the tutor, so the partner is the learner
+                        partnerName =
+                            !string.IsNullOrWhiteSpace(learnerName) ? learnerName :
+                            !string.IsNullOrWhiteSpace(learnerEmail) ? learnerEmail :
+                            !string.IsNullOrWhiteSpace(learnerDisplay) ? learnerDisplay :
+                            learnerId;
+                    }
+                    else
+                    {
+                        // I'm the learner, so the partner is the tutor
+                        partnerName =
+                            !string.IsNullOrWhiteSpace(tutorName) ? tutorName :
+                            !string.IsNullOrWhiteSpace(tutorEmail) ? tutorEmail :
+                            !string.IsNullOrWhiteSpace(tutorDisplay) ? tutorDisplay :
+                            tutorId;
+                    }
+
+                    sessions.Add(new SessionCard
+                    {
+                        Day = parsedDt.ToString("dd"),
+                        Month = parsedDt.ToString("MMM"),
+                        Skill = skill,
+                        PartnerName = partnerName,
+                        Time = parsedDt.ToString("h:mm tt"),
+                        IsTeaching = isTeaching
+                    });
+                }
+
+                return sessions;
+            }
+            catch (JsonReaderException jex)
+            {
+                System.Diagnostics.Debug.WriteLine("GetUpcomingSessions JSON parse failed: " + jex.Message);
+                return new List<SessionCard>();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("GetUpcomingSessions failed: " + ex.Message);
+                return new List<SessionCard>();
             }
         }
 
@@ -552,7 +775,7 @@ namespace SkillMatchApplication
                 apiClient.SetJwt(Session.JwtToken);
 
             var json = await apiClient.GetJson("/api/matches");
-            System.Diagnostics.Debug.WriteLine("RAW JSON: " + json);
+            System.Diagnostics.Debug.WriteLine("RAW MATCHES JSON: " + json);
 
             if (string.IsNullOrWhiteSpace(json))
                 return new List<MatchCard>();
@@ -588,36 +811,52 @@ namespace SkillMatchApplication
 
                 foreach (var item in arr)
                 {
-                    // Skills -> produce a comma-separated string
-                    string skillsString = string.Empty;
+                    // parse skillsOffered into list
+                    var skillsOffered = new List<string>();
                     var skillsToken = item["skillsOffered"] ?? item["skills"];
-
-                    if (skillsToken != null && skillsToken.Type != JTokenType.Null)
+                    if (skillsToken != null && skillsToken.Type == JTokenType.Array)
                     {
-                        if (skillsToken.Type == JTokenType.Array)
-                        {
-                            // Map each element to trimmed string and join
-                            var parts = skillsToken
-                                .Children()
-                                .Select(t => t.ToString().Trim())
-                                .Where(s => !string.IsNullOrEmpty(s));
+                        skillsOffered = skillsToken
+                            .Children()
+                            .Select(t => t.ToString().Trim())
+                            .Where(s => !string.IsNullOrEmpty(s))
+                            .ToList();
+                    }
+                    else if (skillsToken != null && skillsToken.Type != JTokenType.Null)
+                    {
+                        var s = skillsToken.ToString().Trim();
+                        if (!string.IsNullOrEmpty(s)) skillsOffered.Add(s);
+                    }
 
-                            skillsString = string.Join(", ", parts);
-                        }
-                        else
+                    // parse overlapSkillIds (or other id-arrays)
+                    var skillIds = new List<int>();
+                    var idToken = item["overlapSkillIds"] ?? item["skillIds"] ?? item["skillsIds"];
+                    if (idToken != null && idToken.Type == JTokenType.Array)
+                    {
+                        foreach (var t in idToken.Children())
                         {
-                            // Single value (string/number) -> use ToString()
-                            skillsString = skillsToken.ToString().Trim();
+                            int parsed;
+                            if (int.TryParse(t.ToString(), out parsed))
+                                skillIds.Add(parsed);
                         }
                     }
 
+                    var skillDisplay = skillsOffered.Any() ? string.Join(", ", skillsOffered) : (string)(item["skill"] ?? item["Skill"] ?? string.Empty);
+
                     matches.Add(new MatchCard
                     {
+                        CurrentUserId = (string)(item["id"] ?? item["Id"]),
+                        MatchedUserId = (string)(item["userId"] ?? item["UserId"]),
                         Name = (string)(item["name"] ?? item["Name"]),
-                        Skill = skillsString,
+                        Skill = skillDisplay,
+                        SkillsOffered = skillsOffered,
+                        SkillIds = skillIds,
                         Rating = item["rating"] != null ? Convert.ToDouble(item["rating"]) : 0.0
                     });
                 }
+
+                // Keep local allMatchesList in sync (optional)
+                allMatchesList = matches;
 
                 return matches;
             }
