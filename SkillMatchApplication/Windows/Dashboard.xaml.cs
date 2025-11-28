@@ -142,11 +142,10 @@ namespace SkillMatchApplication
             //};
         }
 
-        public void AddMessage(string text, bool isSent)
-        {
-            currentMessages.Add(new Message { Text = text, IsSent = isSent });
-            messageScroll.ScrollToEnd();
-        }
+
+        
+
+
         //Show the specified page and hide others
         public void Show(Grid page)
         {
@@ -376,6 +375,14 @@ namespace SkillMatchApplication
         }
 
 
+        //Messenger 
+        public void AddMessage(string text, bool isSent)
+        {
+            currentMessages.Add(new Message { Text = text, IsSent = isSent });
+            messageScroll.ScrollToEnd();
+        }
+
+
         //Messenger
         private void lbConversations_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -396,10 +403,13 @@ namespace SkillMatchApplication
             }
         }
 
+        // Send button click handler Messnger
         private void btnSend_Click(object sender, RoutedEventArgs e)
         {
             SendMessage();
         }
+
+        // Handle Enter key in txtMessage
 
         private void txtMessage_KeyDown(object sender, KeyEventArgs e)
         {
@@ -418,6 +428,8 @@ namespace SkillMatchApplication
                 }
             };
         }
+
+        // Send the message
 
         private void SendMessage()
         {
